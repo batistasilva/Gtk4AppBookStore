@@ -1,2 +1,5 @@
-# Gtk4AppBookStore
-Gtk4 Aplication with Database and cmake. 
+# [Gtk4AppBookStore]
+
+### GTK4 Application with database, css styles and CMake.
+
+![bookstore-image](util/bookstore-image.png)
