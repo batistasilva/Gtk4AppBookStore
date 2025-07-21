@@ -1,0 +1,505 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- Created with Cambalache 0.96.1 -->
+<interface domain="com.br.bookstore">
+  <!-- interface-name gtkaddtolist.ui -->
+  <requires lib="gio" version="2.0"/>
+  <requires lib="gtk" version="4.8"/>
+  <object class="GtkWindow" id="main_window">
+    <property name="child">
+      <object class="GtkBox" id="gtkbox_main">
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkFrame" id="main_first_frame">
+            <property name="label">Form</property>
+            <property name="label-xalign">0.5</property>
+            <property name="margin-start">5</property>
+            <property name="margin-top">5</property>
+            <property name="width-request">700</property>
+            <child>
+              <object class="GtkFixed" id="fixed_first_frame">
+                <child>
+                  <object class="GtkLabel" id="label_title">
+                    <property name="height-request">30</property>
+                    <property name="label">Title:</property>
+                    <property name="margin-start">5</property>
+                    <property name="width-request">40</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="entry_title">
+                    <property name="height-request">30</property>
+                    <property name="margin-start">5</property>
+                    <property name="margin-top">29</property>
+                    <property name="tooltip-text">Fill in the title field.</property>
+                    <property name="width-request">100</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label_author">
+                    <property name="height-request">30</property>
+                    <property name="label">Author:</property>
+                    <property name="margin-start">110</property>
+                    <property name="width-request">58</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="entry_author">
+                    <property name="height-request">30</property>
+                    <property name="margin-start">110</property>
+                    <property name="margin-top">29</property>
+                    <property name="tooltip-text">Fill in the author field.</property>
+                    <property name="width-request">150</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label_genre">
+                    <property name="height-request">30</property>
+                    <property name="label">Genre:</property>
+                    <property name="margin-start">264</property>
+                    <property name="width-request">50</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="entry_genre">
+                    <property name="height-request">30</property>
+                    <property name="margin-start">264</property>
+                    <property name="margin-top">29</property>
+                    <property name="tooltip-text">Fill in the genre field.</property>
+                    <property name="width-request">150</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label_public_date">
+                    <property name="height-request">30</property>
+                    <property name="label">Publication_date:</property>
+                    <property name="margin-start">420</property>
+                    <property name="width-request">116</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="entry_public_date">
+                    <property name="height-request">30</property>
+                    <property name="margin-start">420</property>
+                    <property name="margin-top">29</property>
+                    <property name="tooltip-text">Fill in the publication date field.</property>
+                    <property name="width-request">130</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label_isbn">
+                    <property name="height-request">30</property>
+                    <property name="label">Isbn:</property>
+                    <property name="margin-end">5</property>
+                    <property name="margin-start">557</property>
+                    <property name="width-request">40</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="entry_isbn">
+                    <property name="height-request">30</property>
+                    <property name="margin-end">5</property>
+                    <property name="margin-start">557</property>
+                    <property name="margin-top">29</property>
+                    <property name="tooltip-text">Fill in the isbn field.</property>
+                    <property name="width-request">130</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label_price">
+                    <property name="height-request">30</property>
+                    <property name="label">Price:</property>
+                    <property name="margin-start">5</property>
+                    <property name="margin-top">81</property>
+                    <property name="width-request">40</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="entry_price">
+                    <property name="height-request">30</property>
+                    <property name="margin-start">5</property>
+                    <property name="margin-top">110</property>
+                    <property name="tooltip-text">Fill in the price field.</property>
+                    <property name="width-request">100</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label_rating">
+                    <property name="height-request">30</property>
+                    <property name="label">Rating:</property>
+                    <property name="margin-start">110</property>
+                    <property name="margin-top">81</property>
+                    <property name="width-request">53</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="entry_rating">
+                    <property name="height-request">30</property>
+                    <property name="margin-start">110</property>
+                    <property name="margin-top">110</property>
+                    <property name="tooltip-text">Fill in the rating field.</property>
+                    <property name="width-request">150</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label_publisher">
+                    <property name="height-request">30</property>
+                    <property name="label">Publisher:</property>
+                    <property name="margin-start">264</property>
+                    <property name="margin-top">81</property>
+                    <property name="width-request">72</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="entry_publisher">
+                    <property name="height-request">30</property>
+                    <property name="margin-start">264</property>
+                    <property name="margin-top">110</property>
+                    <property name="tooltip-text">Fill in the publisher field.</property>
+                    <property name="width-request">150</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label_language">
+                    <property name="height-request">30</property>
+                    <property name="label">Language:</property>
+                    <property name="margin-start">420</property>
+                    <property name="margin-top">81</property>
+                    <property name="width-request">73</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="entry_language">
+                    <property name="height-request">30</property>
+                    <property name="margin-start">420</property>
+                    <property name="margin-top">110</property>
+                    <property name="tooltip-text">Fill in the language field.</property>
+                    <property name="width-request">130</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel" id="label_page_count">
+                    <property name="height-request">30</property>
+                    <property name="label">Page Count:</property>
+                    <property name="margin-end">5</property>
+                    <property name="margin-start">557</property>
+                    <property name="margin-top">81</property>
+                    <property name="width-request">85</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkEntry" id="entry_page_count">
+                    <property name="height-request">30</property>
+                    <property name="margin-end">5</property>
+                    <property name="margin-start">557</property>
+                    <property name="margin-top">110</property>
+                    <property name="tooltip-text">Fill in the page count field.</property>
+                    <property name="width-request">130</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkBox" id="main_box">
+            <property name="height-request">30</property>
+            <property name="margin-end">211</property>
+            <property name="margin-start">166</property>
+            <property name="margin-top">10</property>
+            <property name="spacing">3</property>
+            <child>
+              <object class="GtkButton" id="button_add">
+                <property name="label">Add Item</property>
+                <signal name="clicked" handler="run_add_item_cb"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="button_remove">
+                <property name="label">Remove Item</property>
+                <signal name="clicked" handler="run_remove_item_cb"/>
+              </object>
+            </child>
+            <child>
+              <object class="GtkButton" id="button_load_item">
+                <property name="label">Load Item</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkFrame" id="main_second_frame">
+            <property name="label">Items:</property>
+            <property name="label-xalign">0.01</property>
+            <property name="margin-start">5</property>
+            <property name="margin-top">10</property>
+            <property name="width-request">700</property>
+            <child>
+              <object class="GtkFixed" id="fixed_main_second_frame">
+                <property name="margin-start">5</property>
+                <child>
+                  <object class="GtkScrolledWindow" id="scrolled_win_second_frame">
+                    <property name="height-request">268</property>
+                    <property name="width-request">693</property>
+                    <child>
+                      <object class="GtkColumnView" id="column_view_frame">
+                        <property name="model">
+                          <object class="GtkSingleSelection" id="single_select_model_id">
+                            <property name="model">
+                              <object class="GListStore" id="glist_store_model_id">
+                                <property name="item-type">BookData</property>
+                              </object>
+                            </property>
+                          </object>
+                        </property>
+                        <property name="show-column-separators">True</property>
+                        <property name="show-row-separators">True</property>
+                        <child>
+                          <object class="GtkColumnViewColumn" id="colum_first_item">
+                            <property name="factory">
+                              <object class="GtkBuilderListItemFactory" id="first_column_factory_id">
+                                <property name="bytes"><![CDATA[                    <?xml version="1.0" encoding="UTF-8"?>
+                    <interface>
+                      <template class="GtkListItem">
+                        <property name="child">
+                          <object class="GtkLabel">
+                            <binding name="label">
+                              <lookup name="title" type="BookData">
+                                <lookup name="item">GtkListItem</lookup>
+                              </lookup>
+                            </binding>
+                          </object>
+                        </property>
+                      </template>
+                    </interface>]]></property>
+                              </object>
+                            </property>
+                            <property name="title">Colum_1</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkColumnViewColumn" id="column_second_item">
+                            <property name="factory">
+                              <object class="GtkBuilderListItemFactory" id="second_column_factory_id">
+                                <property name="bytes"><![CDATA[                    <?xml version="1.0" encoding="UTF-8"?>
+                    <interface>
+                      <template class="GtkListItem">
+                        <property name="child">
+                          <object class="GtkLabel">
+                            <binding name="label">
+                              <lookup name="author" type="BookData">
+                                <lookup name="item">GtkListItem</lookup>
+                              </lookup>
+                            </binding>
+                          </object>
+                        </property>
+                      </template>
+                    </interface>]]></property>
+                              </object>
+                            </property>
+                            <property name="title">Colum_2</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkColumnViewColumn" id="column_third_item">
+                            <property name="factory">
+                              <object class="GtkBuilderListItemFactory" id="third_column_factory_id">
+                                <property name="bytes"><![CDATA[                    <?xml version="1.0" encoding="UTF-8"?>
+                    <interface>
+                      <template class="GtkListItem">
+                        <property name="child">
+                          <object class="GtkLabel">
+                            <binding name="label">
+                              <lookup name="genre" type="BookData">
+                                <lookup name="item">GtkListItem</lookup>
+                              </lookup>
+                            </binding>
+                          </object>
+                        </property>
+                      </template>
+                    </interface>]]></property>
+                              </object>
+                            </property>
+                            <property name="title">Colum_3</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkColumnViewColumn" id="column_fourth_item">
+                            <property name="factory">
+                              <object class="GtkBuilderListItemFactory" id="fourth_column_factory_id">
+                                <property name="bytes"><![CDATA[                    <?xml version="1.0" encoding="UTF-8"?>
+                    <interface>
+                      <template class="GtkListItem">
+                        <property name="child">
+                          <object class="GtkLabel">
+                            <binding name="label">
+                              <lookup name="isbn" type="BookData">
+                                <lookup name="item">GtkListItem</lookup>
+                              </lookup>
+                            </binding>
+                          </object>
+                        </property>
+                      </template>
+                    </interface>]]></property>
+                              </object>
+                            </property>
+                            <property name="title">Colum_4</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkColumnViewColumn" id="column_fifth_item">
+                            <property name="factory">
+                              <object class="GtkBuilderListItemFactory" id="fifth_column_factory_id">
+                                <property name="bytes"><![CDATA[                    <?xml version="1.0" encoding="UTF-8"?>
+                    <interface>
+                      <template class="GtkListItem">
+                        <property name="child">
+                          <object class="GtkLabel">
+                            <binding name="label">
+                              <lookup name="price" type="BookData">
+                                <lookup name="item">GtkListItem</lookup>
+                              </lookup>
+                            </binding>
+                          </object>
+                        </property>
+                      </template>
+                    </interface>]]></property>
+                              </object>
+                            </property>
+                            <property name="title">Colum_5</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkColumnViewColumn" id="column_sixth_item">
+                            <property name="factory">
+                              <object class="GtkBuilderListItemFactory" id="sixth_column_factory_id">
+                                <property name="bytes"><![CDATA[                    <?xml version="1.0" encoding="UTF-8"?>
+                    <interface>
+                      <template class="GtkListItem">
+                        <property name="child">
+                          <object class="GtkLabel">
+                            <binding name="label">
+                              <lookup name="publication_date" type="BookData">
+                                <lookup name="item">GtkListItem</lookup>
+                              </lookup>
+                            </binding>
+                          </object>
+                        </property>
+                      </template>
+                    </interface>]]></property>
+                              </object>
+                            </property>
+                            <property name="title">Colum_6</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkColumnViewColumn" id="column_seventh_item">
+                            <property name="factory">
+                              <object class="GtkBuilderListItemFactory" id="seventh_column_factory_id">
+                                <property name="bytes"><![CDATA[                    <?xml version="1.0" encoding="UTF-8"?>
+                    <interface>
+                      <template class="GtkListItem">
+                        <property name="child">
+                          <object class="GtkLabel">
+                            <binding name="label">
+                              <lookup name="rating" type="BookData">
+                                <lookup name="item">GtkListItem</lookup>
+                              </lookup>
+                            </binding>
+                          </object>
+                        </property>
+                      </template>
+                    </interface>]]></property>
+                              </object>
+                            </property>
+                            <property name="title">Colum_7</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkColumnViewColumn" id="column_eight_item">
+                            <property name="factory">
+                              <object class="GtkBuilderListItemFactory" id="eight_column_factory_id">
+                                <property name="bytes"><![CDATA[ <?xml version="1.0" encoding="UTF-8"?>
+                    <interface>
+                      <template class="GtkListItem">
+                        <property name="child">
+                          <object class="GtkLabel">
+                            <binding name="label">
+                              <lookup name="publisher" type="BookData">
+                                <lookup name="item">GtkListItem</lookup>
+                              </lookup>
+                            </binding>
+                          </object>
+                        </property>
+                      </template>
+                    </interface>]]></property>
+                              </object>
+                            </property>
+                            <property name="title">Colum_8</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkColumnViewColumn" id="colum_ninth_item">
+                            <property name="factory">
+                              <object class="GtkBuilderListItemFactory" id="ninth_column_factory_id">
+                                <property name="bytes"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+                    <interface>
+                      <template class="GtkListItem">
+                        <property name="child">
+                          <object class="GtkLabel">
+                            <binding name="label">
+                              <lookup name="language" type="BookData">
+                                <lookup name="item">GtkListItem</lookup>
+                              </lookup>
+                            </binding>
+                          </object>
+                        </property>
+                      </template>
+                    </interface>]]></property>
+                              </object>
+                            </property>
+                            <property name="title">Colum_9</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkColumnViewColumn" id="colum_tenth_item">
+                            <property name="factory">
+                              <object class="GtkBuilderListItemFactory" id="tenth_column_factory_id">
+                                <property name="bytes"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>
+                    <interface>
+                      <template class="GtkListItem">
+                        <property name="child">
+                          <object class="GtkLabel">
+                            <binding name="label">
+                              <lookup name="page_count" type="BookData">
+                                <lookup name="item">GtkListItem</lookup>
+                              </lookup>
+                            </binding>
+                          </object>
+                        </property>
+                      </template>
+                    </interface>]]></property>
+                              </object>
+                            </property>
+                            <property name="title">Colum_10</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </property>
+    <property name="default-height">600</property>
+    <property name="default-width">710</property>
+    <property name="destroy-with-parent">True</property>
+    <property name="focusable">True</property>
+    <property name="handle-menubar-accel">False</property>
+    <property name="resizable">False</property>
+    <property name="title">Gtk4 Book Store </property>
+    <property name="width-request">710</property>
+  </object>
+</interface>

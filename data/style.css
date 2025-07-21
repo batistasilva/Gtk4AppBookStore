@@ -1,0 +1,29 @@
+.alert-message {
+    font-size: 18px;
+    color: #444;
+    padding: 10px;
+}
+
+.confirm-button {
+    background-color: #aaaaff;
+    color: black;
+    border-radius: 4px;
+    padding: 6px 12px;
+}
+
+/*Green*/
+.confirm-button:hover {
+    background-color: #45A049;
+}
+
+/*Red*/
+.cancel-button {
+    background-color: #aaaaff;
+    color: black;
+    border-radius: 4px;
+    padding: 6px 12px;
+}
+
+.cancel-button:hover {
+    background-color: #D32F2F;
+}
