@@ -1,9 +1,11 @@
+/*Blue Strong*/
 .alert-message {
     font-size: 18px;
-    color: #444;
-    padding: 10px;
-}
+    color: #30008f;
+    padding: 20px 10px 20px 10px;
 
+}
+/*White-Blue*/
 .confirm-button {
     background-color: #aaaaff;
     color: black;
@@ -24,6 +26,7 @@
     padding: 6px 12px;
 }
 
+/*Red*/
 .cancel-button:hover {
     background-color: #D32F2F;
 }

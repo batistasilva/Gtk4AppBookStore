@@ -294,23 +294,13 @@ BookData * book_data_new (const char *title,
  */
 GListModel *
 create_book_model(void) {
-    MYSQL *conn = RunInitMySQL();
+    MYSQL *conn = runInitMySQL();
 
-    conn = LoadMyCNF(conn);
+    conn = loadCnf(conn);
 
-    const char * m_Url ="SELECT "
-                        "title, "
-                        "author, "
-                        "genre, "
-                        "publication_date,"
-                        "isbn,"
-                        "price,"
-                        "rating,"
-                        "publisher,"
-                        "language,"
-                        "page_count FROM book_store";
+    const char * m_url ="SELECT * FROM book_store ORDER BY author";
 
-    MYSQL_RES *result = m_RunQuery(conn, m_Url);
+    MYSQL_RES *result = runQuery(conn, m_url);
 
 
     //int num_fields = getNumFields(result);
@@ -319,13 +309,13 @@ create_book_model(void) {
 
     GListStore *store = g_list_store_new(G_TYPE_OBJECT);
 
-    while ((row = getRowData(result))) {
+    while ((row = getRowData(conn, result))) {
         g_list_store_append(store,
-        book_data_new(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9]));
+        book_data_new(row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10]));
         printf("\n");
     }
 
-    runCloseConn(conn, result);
+    runCloseConn(conn);
 
     return G_LIST_MODEL(store);
 }
@@ -352,11 +342,11 @@ on_response_remove(GtkAlertDialog *dialog,
         callback = (GCallback) user_data;  // Use the OK callback
         //remove store item
         g_list_store_remove(mItem->store, mItem->selected_index);
-        g_print("\nRemoving Selected Index : %d ",mItem->selected_index);
+        //g_print("\nRemoving Selected Index : %d ",mItem->selected_index);
         //on_ok_response(user_data);
     } else if (response == GTK_RESPONSE_CANCEL) {
         callback = (GCallback) user_data;  // Use the Cancel callback
-        g_print("\nBack down to removal the selected index : %d ",mItem->selected_index);
+        //g_print("\nBack down to removal the selected index : %d ",mItem->selected_index);
     }
 
     if (callback != NULL) {
@@ -387,10 +377,12 @@ show_alert_dialog(GtkWindow *parent_window,
                               const char *message,
                               GCallback on_sl_response,
                               gpointer ok_data,
-                              ItemToRemove * mitem) {
+                              ItemToRemove * mitem)
+{
     GtkWidget *content_area, *label;
 
-    GtkWidget *dialog = gtk_dialog_new();
+    GtkWidget *dialog = gtk_dialog_new();    
+    gtk_window_set_transient_for(GTK_WINDOW(dialog), parent_window);
     gtk_window_set_title(GTK_WINDOW(dialog), "Message!");
 
     // Add OK and Cancel buttons explicitly
@@ -409,6 +401,7 @@ show_alert_dialog(GtkWindow *parent_window,
 
     // Load CSS
     GtkCssProvider *provider = gtk_css_provider_new();
+
     gtk_css_provider_load_from_path(provider, "../../data/style.css");
     gtk_style_context_add_provider_for_display(
         gdk_display_get_default(), GTK_STYLE_PROVIDER(provider),
@@ -439,7 +432,9 @@ show_alert_dialog(GtkWindow *parent_window,
  * @param m_book_data
  * @param mbbook_data
  */
-void setBookDataToEntry(BookData * m_book_data, gpointer mbbook_data){
+void setBookDataToEntry(BookData * m_book_data,
+                        gpointer mbbook_data)
+{
     BuilderBook * builder_book = mbbook_data;
     //
     gtk_editable_set_text(GTK_EDITABLE(builder_book->m_title_obj), m_book_data->title);
@@ -461,7 +456,8 @@ void setBookDataToEntry(BookData * m_book_data, gpointer mbbook_data){
  * @param mbbook_data
  * @return
  */
-BookData * getEntryToBookData(gpointer mbbook_data){
+BookData * getEntryToBookData(gpointer mbbook_data)
+{
     BuilderBook * m_build_data = mbbook_data;
     BookData *m_book_item = g_object_new(BOOK_TYPE_DATA, NULL);
     //
@@ -517,6 +513,78 @@ Load_Selectade_Item_Action(GtkButton *button,
     }
 }
 
+/**
+ * @brief m_AddItemToDatabase
+ * @param bookdata
+ */
+void m_AddItemToDatabase(BookData * bookdata){
+  MYSQL *conn = NULL;
+  MYSQL_STMT *stmt = NULL;
+
+  printf("Hello World!\n");
+  struct Content content[10];
+
+  content[0].value = bookdata->title;
+  content[0].type  = "string";
+  //
+  content[1].value = bookdata->author;
+  content[1].type  = "string";
+  //
+  content[2].value = bookdata->genre;
+  content[2].type  = "string";
+  //
+  content[3].value = bookdata->isbn;
+  content[3].type = "string";
+  //
+  content[4].value = bookdata->price;
+  content[4].type = "string";
+  //
+  content[5].value = bookdata->rating;
+  content[5].type = "string";
+  //
+  content[6].value = bookdata->publication_date;
+  content[6].type = "string";
+  //
+  content[7].value = bookdata->publisher;
+  content[7].type = "string";
+  //
+  content[8].value = bookdata->language;
+  content[8].type = "string";
+  //
+  content[9].value = bookdata->page_count;
+  content[9].type = "string";
+  //
+  conn = runInitMySQL();
+
+  conn = loadCnf(conn);
+
+  printf("Successfully connected to MariaDB!\n");
+
+  // --- 3. Prepare the SQL Statement ---
+  // Use placeholders (?) for values to prevent SQL injection
+  const char *sql_insert = "INSERT INTO book_store (title, author, genre, isbn, price, rating, publication_date, publisher, language, page_count) "
+                                                   "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+  stmt = runStmtInit(stmt, conn);
+
+  if (runStmtPrep(conn, stmt, sql_insert)) {
+     printConnError(conn, "mysql_conn() failed");
+     printStmtError(stmt, "mysql_stmt_prepare() failed");
+  }
+
+  printf("SQL statement prepared successfully.\n");
+
+  //  // Calculate the number of elements in the array
+  //int numElements = sizeof(content) / sizeof(content[0]);
+
+  runStmtBind(conn, stmt, content, 10);
+
+  runSQLExec(conn, stmt, content);
+
+  runCheckAffectedRows(conn, stmt, content);
+
+}
+
 
 /**
  *
@@ -532,7 +600,8 @@ Load_Selectade_Item_Action(GtkButton *button,
  * @param mbbook_data
  */
 static void run_additem_callback(GtkButton *button,
-                                 gpointer mbbook_data) {
+                                 gpointer mbbook_data)
+{
     BuilderBook * m_build_data = mbbook_data;
 
     g_print("\nRun AddItem CallBack...!!!");
@@ -575,6 +644,10 @@ static void run_additem_callback(GtkButton *button,
         //                                    "894"); // Replace with your constructor
 
         BookData * m_bookdata = getEntryToBookData(m_build_data);
+
+        //Add new item from fields to database
+        m_AddItemToDatabase(m_bookdata);
+
 
         g_list_store_append(store, m_bookdata);
         //if (store != NULL) g_object_unref(store); // store can not unref, error will happens
@@ -632,7 +705,7 @@ run_remove_item_callback(GtkButton *button,
             BookData *book = gtk_single_selection_get_selected_item(selection_model);
 
             if (book) {
-                const char *message = "Do you want to remove this item?: ";
+                const char *message = "Do you want to remove this item?\n\t";
                 gchar *msg = g_strconcat(message, "Name: ",book->author, NULL);
 
                 g_print("Message: : %s \n", msg);
