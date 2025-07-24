@@ -326,7 +326,7 @@ int runStmtBind(MYSQL *conn,
     }
 
     if (strcmp(content[i].type, "int") == 0) {
-      printf("\n\nContent of [Value_Ptr] Value %d\n: ", content[i].value_int);
+      printf("\n\nContent of [Int] Value %d\n: ", content[i].value_int);
 
       bind[i].buffer_type = MYSQL_TYPE_LONG;
       bind[i].buffer = (char *)&content[i].value_int;

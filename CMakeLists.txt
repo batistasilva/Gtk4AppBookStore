@@ -9,8 +9,11 @@ set (CMAKE_CXX_FLAGS "-fexceptions -export-dynamic")
 # Add the util/ folder to include path
 include_directories(${CMAKE_SOURCE_DIR}/util)
 
-# Add the util/ folder to include path
+# Add the src/ folder to include path
 include_directories(${CMAKE_SOURCE_DIR}/src)
+
+# Add the dao/ folder to include path
+include_directories(${CMAKE_SOURCE_DIR}/dao)
 
 find_package(PkgConfig REQUIRED)
 
@@ -28,6 +31,10 @@ add_executable(Gtk4AppBookStore main.c
     src/bookstore.h
     src/bookstore.c
     data/style.css
+    dao/bookstore_dao.c
+    dao/bookstore_dao.h
+
+
 
 )
 

@@ -1,6 +1,9 @@
 #ifndef MYSQL_UTILS_H
 #define MYSQL_UTILS_H
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include <mariadb/mysql.h>
 

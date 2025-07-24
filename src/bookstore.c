@@ -18,6 +18,10 @@ book_data_set_property (GObject *object,
 
     switch (property_id)
     {
+    case PROP_BOOK_ID:
+        self->book_id = g_value_dup_string (value);
+        break;
+
     case PROP_TITLE:
         self->title = g_value_dup_string (value);
         break;
@@ -85,6 +89,10 @@ book_data_get_property (GObject *object,
 
     switch (property_id)
     {
+    case PROP_BOOK_ID:
+        g_value_set_string (value, self->book_id);
+        break;
+
     case PROP_TITLE:
         g_value_set_string (value, self->title);
         break;
@@ -139,7 +147,7 @@ static void
 book_data_finalize (GObject *object)
 {
     BookData *self = BOOK_DATA(object);
-
+    g_free (self->book_id);
     g_free (self->title);
     g_free (self->author);
     g_free (self->genre);
@@ -158,6 +166,7 @@ book_data_finalize (GObject *object)
  */
 static void
 book_data_init(BookData *item) {
+    item->book_id          = NULL;
     item->title            = NULL;
     item->author           = NULL;
     item->genre            = NULL;
@@ -181,6 +190,12 @@ book_data_class_init(BookDataClass * class) {
     gobject_class->finalize     = book_data_finalize;
     gobject_class->get_property = book_data_get_property;
     gobject_class->set_property = book_data_set_property;
+
+    properties[PROP_BOOK_ID] = g_param_spec_string("book_id",
+                                                 NULL,
+                                                 NULL,
+                                                 NULL,
+                                                 G_PARAM_READWRITE);
 
     properties[PROP_TITLE] = g_param_spec_string("title",
                                                  NULL,
@@ -249,6 +264,7 @@ book_data_class_init(BookDataClass * class) {
 
 /**
  * @brief book_data_new
+ * @param book_id
  * @param title
  * @param author
  * @param genre
@@ -262,7 +278,8 @@ book_data_class_init(BookDataClass * class) {
  * @return
  */
 static
-BookData * book_data_new (const char *title,
+BookData * book_data_new (const char *book_id,
+                          const char *title,
                           const char *author,
                           const char *genre,
                           const char *publication_date,
@@ -274,6 +291,7 @@ BookData * book_data_new (const char *title,
                           const char *page_count)
 {
     BookData *item = g_object_new(BOOK_TYPE_DATA, NULL);
+    item->book_id = g_strdup(book_id);
     item->title   = g_strdup(title);
     item->author  = g_strdup(author);
     item->genre   = g_strdup(genre);
@@ -298,7 +316,7 @@ create_book_model(void) {
 
     conn = loadCnf(conn);
 
-    const char * m_url ="SELECT * FROM book_store ORDER BY author";
+    const char * m_url ="SELECT * FROM book_store";
 
     MYSQL_RES *result = runQuery(conn, m_url);
 
@@ -309,9 +327,14 @@ create_book_model(void) {
 
     GListStore *store = g_list_store_new(G_TYPE_OBJECT);
 
+//title, author      , genre  , publication_date, isbn       , price, rating , publisher, language, page_count
+//Mr   , Adda Spragge, Romance,  2025-07-24     , 066718085-0, Peso ,  2.7   , Tagopia  , Chichewa ,  798
+
+
     while ((row = getRowData(conn, result))) {
         g_list_store_append(store,
-        book_data_new(row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10]));
+                     //id   ,title ,author,genre ,p-date,isbn, price ,rating, publish, lang, page
+        book_data_new(row[0],row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10]));
         printf("\n");
     }
 
@@ -437,6 +460,7 @@ void setBookDataToEntry(BookData * m_book_data,
 {
     BuilderBook * builder_book = mbbook_data;
     //
+    gtk_editable_set_text(GTK_EDITABLE(builder_book->m_book_id_obj), m_book_data->book_id);
     gtk_editable_set_text(GTK_EDITABLE(builder_book->m_title_obj), m_book_data->title);
     gtk_editable_set_text(GTK_EDITABLE(builder_book->m_author_obj), m_book_data->author);
     gtk_editable_set_text(GTK_EDITABLE(builder_book->m_genre_obj), m_book_data->genre);
@@ -461,6 +485,7 @@ BookData * getEntryToBookData(gpointer mbbook_data)
     BuilderBook * m_build_data = mbbook_data;
     BookData *m_book_item = g_object_new(BOOK_TYPE_DATA, NULL);
     //
+    m_book_item->book_id  = g_strdup(gtk_editable_get_text(GTK_EDITABLE(m_build_data->m_book_id_obj)));
     m_book_item->title  = g_strdup(gtk_editable_get_text(GTK_EDITABLE(m_build_data->m_title_obj)));
     m_book_item->author = g_strdup(gtk_editable_get_text(GTK_EDITABLE(m_build_data->m_author_obj)));
     m_book_item->genre = g_strdup(gtk_editable_get_text(GTK_EDITABLE(m_build_data->m_genre_obj)));
@@ -502,6 +527,8 @@ Load_Selectade_Item_Action(GtkButton *button,
         BookData *book = gtk_single_selection_get_selected_item(selection_model);
 
         if (book) {
+            g_print("\nGooing to set Bookdata to Entry.\n");
+
             //Populate the loaded data from model.
             setBookDataToEntry(book, build_data);
 
@@ -518,10 +545,7 @@ Load_Selectade_Item_Action(GtkButton *button,
  * @param bookdata
  */
 void m_AddItemToDatabase(BookData * bookdata){
-  MYSQL *conn = NULL;
-  MYSQL_STMT *stmt = NULL;
 
-  printf("Hello World!\n");
   struct Content content[10];
 
   content[0].value = bookdata->title;
@@ -554,34 +578,8 @@ void m_AddItemToDatabase(BookData * bookdata){
   content[9].value = bookdata->page_count;
   content[9].type = "string";
   //
-  conn = runInitMySQL();
 
-  conn = loadCnf(conn);
-
-  printf("Successfully connected to MariaDB!\n");
-
-  // --- 3. Prepare the SQL Statement ---
-  // Use placeholders (?) for values to prevent SQL injection
-  const char *sql_insert = "INSERT INTO book_store (title, author, genre, isbn, price, rating, publication_date, publisher, language, page_count) "
-                                                   "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-  stmt = runStmtInit(stmt, conn);
-
-  if (runStmtPrep(conn, stmt, sql_insert)) {
-     printConnError(conn, "mysql_conn() failed");
-     printStmtError(stmt, "mysql_stmt_prepare() failed");
-  }
-
-  printf("SQL statement prepared successfully.\n");
-
-  //  // Calculate the number of elements in the array
-  //int numElements = sizeof(content) / sizeof(content[0]);
-
-  runStmtBind(conn, stmt, content, 10);
-
-  runSQLExec(conn, stmt, content);
-
-  runCheckAffectedRows(conn, stmt, content);
+  m_AddItemToDB(content, 10);
 
 }
 
@@ -631,18 +629,6 @@ static void run_additem_callback(GtkButton *button,
         //if (list_model != NULL)g_object_unref(list_model); // List model can not unref, error will happens
         g_print("\nValue of store: %p ", store);
 
-        // Create and append a new item
-        // BookData *new_item = book_data_new("Mrs",
-        //                                    "Langston Vedenyakin",
-        //                                    "Biography",
-        //                                    "7/20/1913",
-        //                                    "569314541-7",
-        //                                    "Rupiah",
-        //                                    "4.9",
-        //                                    "Dabtype",
-        //                                    "Tibetan",
-        //                                    "894"); // Replace with your constructor
-
         BookData * m_bookdata = getEntryToBookData(m_build_data);
 
         //Add new item from fields to database
@@ -682,12 +668,14 @@ run_remove_item_callback(GtkButton *button,
 
         GtkSingleSelection *single_selection =
             GTK_SINGLE_SELECTION(selection_model);
+
         // if (selection_model != NULL)  g_object_unref(selection_model); //
         // Selection Model can not unref
         g_print("\nValue is Single Selectionw: %p : ", single_selection);
 
         // Get the underlying GListModel
         GListModel *list_model = gtk_single_selection_get_model(single_selection);
+
         // if (single_selection != NULL) g_object_unref(single_selection); //
         // Single Selection can not unref
         g_print("\nValue of store: %p ", list_model);
@@ -725,6 +713,7 @@ run_remove_item_callback(GtkButton *button,
                                   item_to_remove);
 
                 g_print("Selected Row Data:\n");
+                g_print("  BookID: %s\n", book->book_id);
                 g_print("  Title: %s\n", book->title);
                 g_print("  Author: %s\n", book->author);
                 g_print("  Genre: %s\n", book->genre);
@@ -751,6 +740,102 @@ run_remove_item_callback(GtkButton *button,
 }
 
 
+/**
+ * @brief m_AddItemToDatabase
+ * @param bookdata
+ */
+void m_UdateItemToDatabase(BookData * bookdata){
+
+  struct Content content[11];
+
+  content[0].value = bookdata->title;
+  content[0].type  = "string";
+  //
+  content[1].value = bookdata->author;
+  content[1].type  = "string";
+  //
+  content[2].value = bookdata->genre;
+  content[2].type  = "string";
+  //
+  content[3].value = bookdata->isbn;
+  content[3].type = "string";
+  //
+  content[4].value = bookdata->price;
+  content[4].type = "string";
+  //
+  content[5].value = bookdata->rating;
+  content[5].type = "string";
+  //
+  content[6].value = bookdata->publication_date;
+  content[6].type = "string";
+  //
+  content[7].value = bookdata->publisher;
+  content[7].type = "string";
+  //
+  content[8].value = bookdata->language;
+  content[8].type = "string";
+  //
+  content[9].value = bookdata->page_count;
+  content[9].type = "string";
+  //
+  content[10].value = bookdata->book_id;
+  content[10].type = "string";
+
+  m_UpdtItemToDB(content, 11);
+
+}
+
+
+static void
+run_update_item_callback(GtkButton *button,
+                         gpointer mbbook_data
+){
+    BuilderBook * m_build_data = mbbook_data;
+
+    g_print("\nRun Update Item CallBack...!!!");
+
+
+    GtkSelectionModel *selection_model = GTK_SELECTION_MODEL(gtk_column_view_get_model(m_build_data->columnview));
+    //if (column_view != NULL) g_object_unref(column_view); // Can not unfef ColumnView, erros will happens
+
+   /***
+   * Get the Selected Item (for GtkSingleSelection): If using GtkSingleSelection,
+   * retrieve the single selected item using gtk_single_selection_get_selected_item().
+   **/
+    if (GTK_IS_SINGLE_SELECTION(selection_model)) {
+
+        GtkSingleSelection *single_selection = GTK_SINGLE_SELECTION(selection_model);
+        //if (selection_model != NULL)  g_object_unref(selection_model); // Selection Model can not unref
+        g_print("\nValue is Single Selectionw: %p : ", single_selection);
+
+        // Get the underlying GListModel
+        GListModel *list_model = gtk_single_selection_get_model(single_selection);
+        g_print("\nValue of store: %p ", list_model);
+
+        // Cast to GListStore
+        GListStore *store = G_LIST_STORE(list_model);
+        g_print("\nValue of store: %p ", store);
+
+
+        BookData * m_bookdata = getEntryToBookData(m_build_data);
+
+        //Update item from fields to database
+        m_UdateItemToDatabase(m_bookdata);
+
+        g_list_store_append(store, m_bookdata);
+        //if (store != NULL) g_object_unref(store); // store can not unref, error will happens
+
+       // if (m_build_data != NULL) g_object_unref(m_build_data); // Store can not unref, error will happens
+
+        if (m_bookdata != NULL) g_object_unref(m_bookdata); // Store owns a reference now
+    } else {
+        g_print("\nIs not GtkSingleSelection");
+    }
+
+    g_print("\nEnd Update Item...!!!");
+
+}
+
 
 void
 activate(GtkApplication *app, gpointer user_data) {
@@ -761,16 +846,16 @@ activate(GtkApplication *app, gpointer user_data) {
     GtkWidget *columnview;
     GtkListItemFactory *factory;
     GtkSingleSelection *selection;
-    GtkColumnViewColumn *title_column;
-    GtkColumnViewColumn *author_column;
-    GtkColumnViewColumn *genre_column;
-    GtkColumnViewColumn *rating_column;
-    GtkColumnViewColumn *isbn_column;
-    GtkColumnViewColumn *publication_date_column;
-    GtkColumnViewColumn *price_column;
-    GtkColumnViewColumn *publisher_column;
-    GtkColumnViewColumn *language_column;
-    GtkColumnViewColumn *page_count_column;
+    // GtkColumnViewColumn *title_column;
+    // GtkColumnViewColumn *author_column;
+    // GtkColumnViewColumn *genre_column;
+    // GtkColumnViewColumn *rating_column;
+    // GtkColumnViewColumn *isbn_column;
+    // GtkColumnViewColumn *publication_date_column;
+    // GtkColumnViewColumn *price_column;
+    // GtkColumnViewColumn *publisher_column;
+    // GtkColumnViewColumn *language_column;
+    // GtkColumnViewColumn *page_count_column;
     BuilderBook * bbook_data;
 
     GtkSorter *sorter;
@@ -793,10 +878,11 @@ activate(GtkApplication *app, gpointer user_data) {
     g_object_add_weak_pointer(G_OBJECT(window), (gpointer *) & window);
 
     // //Get columnview from builder
-    //GObject *column_view = gtk_builder_get_object(builder, "column_view_frame");
+    //GObject *column_view = gtk_builder_get_object(builder, "column_view");
 
     //Get the whole object that the application needs the builder.
-    columnview              = GTK_WIDGET(gtk_builder_get_object(builder, "columnview"));
+    columnview              = GTK_WIDGET(gtk_builder_get_object(builder, "column_view"));
+    GObject *obj_book_id    = gtk_builder_get_object(builder, "entry_book_id");
     GObject *obj_title      = gtk_builder_get_object(builder, "entry_title");
     GObject *obj_author     = gtk_builder_get_object(builder, "entry_author");
     GObject *obj_genre      = gtk_builder_get_object(builder, "entry_genre");
@@ -815,10 +901,12 @@ activate(GtkApplication *app, gpointer user_data) {
 
     gtk_single_selection_set_model(selection, G_LIST_MODEL(model));
 
+    //Creat a stance the bookdata
     bbook_data = g_new(BuilderBook, 1);
     //
     bbook_data->columnview       = GTK_COLUMN_VIEW(columnview);
     //
+    bbook_data->m_book_id_obj    = obj_book_id;
     bbook_data->m_title_obj      = obj_title;
     bbook_data->m_author_obj     = obj_author;
     bbook_data->m_genre_obj      = obj_genre;
@@ -851,6 +939,13 @@ activate(GtkApplication *app, gpointer user_data) {
                      "clicked",
                      G_CALLBACK(run_remove_item_callback),
                      bbook_data->columnview);
+
+    GObject *button_updt = gtk_builder_get_object (builder,"button_updt");
+
+    g_signal_connect(GTK_BUTTON(button_updt),
+                     "clicked",
+                     G_CALLBACK(run_update_item_callback),
+                     bbook_data);
 
     gtk_application_add_window (app, window);
     gtk_window_present(GTK_WINDOW(window));

@@ -3,7 +3,7 @@
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <gtk-4.0/gtk/gtkbuilder.h>
-#include <mysql_utils.h>
+#include <bookstore_dao.h>
 
 G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 
@@ -18,6 +18,7 @@ static gboolean result_remove_item = false;
 enum
 {
     PROP_0,
+    PROP_BOOK_ID,
     PROP_TITLE,
     PROP_AUTHOR,
     PROP_GENRE,
@@ -34,7 +35,7 @@ enum
 struct
     _BookData {
     GObject parent_instance;
-
+    char *book_id;
     char *title;
     char *author;
     char *genre;
@@ -59,6 +60,7 @@ struct _BookDataClass {
  **/
 typedef struct {
     GtkColumnView * columnview;
+    GObject * m_book_id_obj;
     GObject * m_title_obj;
     GObject * m_author_obj;
     GObject * m_genre_obj;
@@ -102,7 +104,9 @@ book_data_class_init(BookDataClass * class);
 
 
 static
-    BookData * book_data_new (const char *title,
+    BookData * book_data_new (
+                  const char *book_id,
+                  const char *title,
                   const char *author,
                   const char *genre,
                   const char *publication_date,
