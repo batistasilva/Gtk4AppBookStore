@@ -425,7 +425,7 @@ show_alert_dialog(GtkWindow *parent_window,
     // Load CSS
     GtkCssProvider *provider = gtk_css_provider_new();
 
-    gtk_css_provider_load_from_path(provider, "../../data/style.css");
+    gtk_css_provider_load_from_path(provider, "../../gui/css/style.css");
     gtk_style_context_add_provider_for_display(
         gdk_display_get_default(), GTK_STYLE_PROVIDER(provider),
         GTK_STYLE_PROVIDER_PRIORITY_USER);
@@ -870,7 +870,7 @@ activate(GtkApplication *app, gpointer user_data) {
      */
     g_type_ensure (BOOK_TYPE_DATA);
 
-    builder = gtk_builder_new_from_file("../../util/gtkaddtolist.xml");
+    builder = gtk_builder_new_from_file("../../gui/gtkaddtolist.xml");
 
     /* Connect signal handlers to the constructed widgets. */
     window =  GTK_WINDOW(gtk_builder_get_object (builder, "main_window"));
