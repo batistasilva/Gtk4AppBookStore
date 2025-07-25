@@ -26,10 +26,14 @@
                 </child>
                 <child>
                   <object class="GtkEntry" id="entry_book_id">
+                    <property name="editable">False</property>
+                    <property name="enable-undo">False</property>
                     <property name="margin-start">5</property>
                     <property name="margin-top">29</property>
+                    <property name="sensitive">False</property>
                     <property name="tooltip-text">Show the book id code.</property>
                     <property name="width-request">80</property>
+                    <property name="xalign">0.5</property>
                   </object>
                 </child>
                 <child>
@@ -47,6 +51,7 @@
                     <property name="margin-top">29</property>
                     <property name="tooltip-text">Fill in the title field.</property>
                     <property name="width-request">80</property>
+                    <property name="xalign">0.5</property>
                   </object>
                 </child>
                 <child>
@@ -64,6 +69,7 @@
                     <property name="margin-top">29</property>
                     <property name="tooltip-text">Fill in the author field.</property>
                     <property name="width-request">150</property>
+                    <property name="xalign">0.5</property>
                   </object>
                 </child>
                 <child>
@@ -81,6 +87,7 @@
                     <property name="margin-top">29</property>
                     <property name="tooltip-text">Fill in the genre field.</property>
                     <property name="width-request">150</property>
+                    <property name="xalign">0.5</property>
                   </object>
                 </child>
                 <child>
@@ -98,6 +105,7 @@
                     <property name="margin-top">29</property>
                     <property name="tooltip-text">Fill in the publication date field.</property>
                     <property name="width-request">110</property>
+                    <property name="xalign">0.5</property>
                   </object>
                 </child>
                 <child>
@@ -117,6 +125,7 @@
                     <property name="margin-top">29</property>
                     <property name="tooltip-text">Fill in the isbn field.</property>
                     <property name="width-request">100</property>
+                    <property name="xalign">0.5</property>
                   </object>
                 </child>
                 <child>
@@ -135,6 +144,7 @@
                     <property name="margin-top">110</property>
                     <property name="tooltip-text">Fill in the price field.</property>
                     <property name="width-request">80</property>
+                    <property name="xalign">0.5</property>
                   </object>
                 </child>
                 <child>
@@ -153,6 +163,7 @@
                     <property name="margin-top">110</property>
                     <property name="tooltip-text">Fill in the rating field.</property>
                     <property name="width-request">80</property>
+                    <property name="xalign">0.5</property>
                   </object>
                 </child>
                 <child>
@@ -171,6 +182,7 @@
                     <property name="margin-top">110</property>
                     <property name="tooltip-text">Fill in the publisher field.</property>
                     <property name="width-request">150</property>
+                    <property name="xalign">0.5</property>
                   </object>
                 </child>
                 <child>
@@ -189,6 +201,7 @@
                     <property name="margin-top">110</property>
                     <property name="tooltip-text">Fill in the language field.</property>
                     <property name="width-request">150</property>
+                    <property name="xalign">0.5</property>
                   </object>
                 </child>
                 <child>
@@ -209,6 +222,16 @@
                     <property name="margin-top">110</property>
                     <property name="tooltip-text">Fill in the page count field.</property>
                     <property name="width-request">110</property>
+                    <property name="xalign">0.5</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkButton" id="button_clean">
+                    <property name="label">Clean</property>
+                    <property name="margin-start">600</property>
+                    <property name="margin-top">110</property>
+                    <property name="tooltip-text">Clean all entry fields...</property>
+                    <property name="width-request">100</property>
                   </object>
                 </child>
               </object>
@@ -246,11 +269,13 @@
             <child>
               <object class="GtkButton" id="button_remove">
                 <property name="label">Remove</property>
+                <property name="sensitive">False</property>
               </object>
             </child>
             <child>
               <object class="GtkButton" id="button_updt">
                 <property name="label">Update</property>
+                <property name="sensitive">False</property>
               </object>
             </child>
           </object>
