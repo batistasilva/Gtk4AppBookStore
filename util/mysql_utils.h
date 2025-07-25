@@ -17,6 +17,13 @@
 extern "C" {
 #endif
 
+// Define the enum
+typedef enum {
+    OP_INSERT,
+    OP_UPDATE,
+    OP_DELETE
+} Option;
+
 /**
  * @brief The Content class
  */
@@ -24,6 +31,7 @@ struct Content {
     char *type;
     char *value;
     int value_int;
+    Option oper_type;
 };
 
 
@@ -141,10 +149,10 @@ MYSQL_STMT * runStmtInit(MYSQL_STMT * stmt, MYSQL *conn);
  * @brief runStmtPrep
  * @param conn
  * @param stmt
- * @param sql_insert
+ * @param sql_query
  * @return
  */
-int runStmtPrep(MYSQL *conn, MYSQL_STMT * stmt, const char *sql_insert);
+int runStmtPrep(MYSQL *conn, MYSQL_STMT * stmt, const char *sql_query);
 
 /**
  * @brief runStmtBind

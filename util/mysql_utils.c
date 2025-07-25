@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-
 /***
  * Prints the last MySQL error to stderr,
  * closes the MySQL connection, and exits the
@@ -17,15 +16,11 @@
  * after a failed MySQL operation.
  **/
 // Function to handle database errors
-void printConnError(MYSQL *conn,
-                    const char *message)
-{
+void printConnError(MYSQL *conn, const char *message) {
   fprintf(stderr, "%s: %s\n", message, mysql_error(conn));
 }
 
-void printStmtError(MYSQL_STMT *stmt,
-                    const char *message)
-{
+void printStmtError(MYSQL_STMT *stmt, const char *message) {
   fprintf(stderr, "%s: %s\n", message, mysql_stmt_error(stmt));
   runCloseStmt(stmt);
 }
@@ -38,8 +33,7 @@ void printStmtError(MYSQL_STMT *stmt,
  *   Exits the program with an error if
  *   initialization fails.
  */
-MYSQL *runInitMySQL(void)
-{
+MYSQL *runInitMySQL(void) {
   MYSQL *conn = mysql_init(NULL);
   //
   if (conn == NULL) {
@@ -108,9 +102,7 @@ MYSQL *loadCnf(MYSQL *conn) {
  *   - The returned MYSQL_RES* must be freed later with mysql_free_result().
  *   - Assumes the table 'book_store' exists with columns: title, author, genre.
  */
-MYSQL_RES *runQuery(MYSQL *conn,
-                    const char *m_url)
-{
+MYSQL_RES *runQuery(MYSQL *conn, const char *m_url) {
 
   if (mysql_query(conn, m_url)) {
     printConnError(conn, "Error MariaDB");
@@ -144,9 +136,7 @@ MYSQL_RES *runQuery(MYSQL *conn,
  *   The returned MYSQL_ROW pointer is invalidated by the next call to
  *   mysql_fetch_row() or by calling mysql_free_result().
  */
-MYSQL_ROW getRowData(MYSQL *conn,
-                     MYSQL_RES *result)
-{
+MYSQL_ROW getRowData(MYSQL *conn, MYSQL_RES *result) {
   MYSQL_ROW row;
 
   if (result == NULL) {
@@ -174,18 +164,14 @@ MYSQL_ROW getRowData(MYSQL *conn,
  *   It assumes that the index is within the range returned by
  * mysql_num_fields().
  */
-const char *getFieldValue(MYSQL_ROW row,
-                          unsigned int index)
-{
+const char *getFieldValue(MYSQL_ROW row, unsigned int index) {
   if (!row)
     return "NULL";
   return row[index] ? row[index] : "NULL";
 }
 
-const char *getFieldValueSafe(MYSQL_ROW row,
-                              unsigned int index,
-                              unsigned int fieldCount)
-{
+const char *getFieldValueSafe(MYSQL_ROW row, unsigned int index,
+                              unsigned int fieldCount) {
   if (!row || index >= fieldCount)
     return "NULL";
   return row[index] ? row[index] : "NULL";
@@ -246,9 +232,7 @@ void printFieldNames(MYSQL_RES *result) {
  * @param conn
  * @return m_stmt
  */
-MYSQL_STMT *runStmtInit(MYSQL_STMT *stmt,
-                        MYSQL *conn)
-{
+MYSQL_STMT *runStmtInit(MYSQL_STMT *stmt, MYSQL *conn) {
 
   if (conn == NULL) {
     printConnError(conn, "mysql_conn_error() failed");
@@ -271,15 +255,10 @@ MYSQL_STMT *runStmtInit(MYSQL_STMT *stmt,
  * @param sql_insert
  * @return 1 or 0
  */
-int runStmtPrep(MYSQL *conn,
-                MYSQL_STMT *stmt,
-                const char *sql_insert)
-{
-  printf("\nInside runStmtPrep \n");
-  printf("\nSql Insert: %s ", sql_insert);
-
+int runStmtPrep(MYSQL *conn, MYSQL_STMT *stmt, const char *sql_query) {
+  printf("\nSql Query: %s ", sql_query);
   //
-  int result = mysql_stmt_prepare(stmt, sql_insert, strlen(sql_insert));
+  int result = mysql_stmt_prepare(stmt, sql_query, strlen(sql_query));
 
   printf("\nResult Prepare: %d ", result);
 
@@ -293,7 +272,6 @@ int runStmtPrep(MYSQL *conn,
   return result;
 }
 
-
 /**
  * @brief runStmtBind
  * @param conn
@@ -302,11 +280,8 @@ int runStmtPrep(MYSQL *conn,
  * @param content_size
  * @return
  */
-int runStmtBind(MYSQL *conn,
-                MYSQL_STMT *stmt,
-                struct Content *content,
-                int content_size)
-{
+int runStmtBind(MYSQL *conn, MYSQL_STMT *stmt, struct Content *content,
+                int content_size) {
 
   MYSQL_BIND bind[content_size]; // Array to hold bind parameters
 
@@ -353,10 +328,7 @@ int runStmtBind(MYSQL *conn,
  * @param m_content
  * @return
  */
-int runSQLExec(MYSQL *conn,
-               MYSQL_STMT *stmt,
-               struct Content *content)
-{
+int runSQLExec(MYSQL *conn, MYSQL_STMT *stmt, struct Content *content) {
   // --- 5. Execute the Prepared Statement ---
   if (mysql_stmt_execute(stmt)) {
     // Handle unique constraint violation for email
@@ -383,20 +355,51 @@ int runSQLExec(MYSQL *conn,
  * @param stmt
  * @param m_content
  */
-void runCheckAffectedRows(MYSQL *conn,
-                          MYSQL_STMT *stmt,
-                          struct Content *content)
-{
-
-  // --- 6. Check Affected Rows ---
+void runCheckAffectedRows(MYSQL *conn, MYSQL_STMT *stmt,
+                          struct Content *content) {
   long long affected_rows = mysql_stmt_affected_rows(stmt);
-  //
-  if (affected_rows == 1) {
-    printf("User '%s' inserted successfully!\n", content[0].value);
-    printf("New user ID: %lld\n",
-           (long long)mysql_stmt_insert_id(stmt)); // Get auto-increment ID
-  } else {
-    fprintf(stderr, "Error: No rows affected or more than one row affected.\n");
+
+  switch (content->oper_type) {
+//
+  case OP_INSERT:
+    printf("  Action: INSERT\n");
+    //
+    if (affected_rows == 1) {
+      printf("User '%s' inserted successfully!\n", content[1].value);
+      printf("New user ID: %lld\n",
+             (long long)mysql_stmt_insert_id(stmt)); // Get auto-increment ID
+    } else {
+      fprintf(stderr,"Error: No rows affected or more than one row affected.\n");
+    }
+    break;
+  case OP_UPDATE:
+    printf("  Action: UPDATE\n");
+    //
+    if (affected_rows > 0) {
+      printf("User with ID %s updated successfully! Rows affected: %lld\n",
+             content[1].value, affected_rows);
+    } else if (affected_rows == 0) {
+      printf("No user found with ID %s to update, or data was already the same.\n",
+          content[1].value);
+    } else {
+      // affected_rows can be -1 on error
+      printStmtError(stmt, "mysql_stmt_affected_rows() returned an error or unexpected value");
+    }
+    break;
+  case OP_DELETE:
+    printf("  Action: DELETE\n");
+    if (affected_rows > 0) {
+        printf("User with ID %s deleted successfully! Rows affected: %lld\n", content[0].value, affected_rows);
+    } else if (affected_rows == 0) {
+        printf("No user found with ID %s to delete.\n", content[0].value);
+    } else {
+        printStmtError(stmt, "mysql_stmt_affected_rows() returned an error or unexpected value");
+    }
+    break;
+  default:
+    fprintf(stderr, "  Error: Unknown operation type for user ID %s\n",
+            content[0].value);
+    return; // Indicate failure
   }
 
   // --- 7. Clean Up ---

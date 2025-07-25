@@ -76,6 +76,7 @@ typedef struct {
 typedef struct {
     GListStore *store;
     guint selected_index;
+    BuilderBook * build_book;
 } ItemToRemove;
 
 
@@ -137,6 +138,9 @@ show_alert_dialog(GtkWindow *parent_window,
 
 void setBookDataToEntry(BookData * m_book_data, gpointer mbbook_data);
 
+void runCleanToAllEntryFields(BuilderBook *build_book);
+
+
 BookData * getEntryToBookData(gpointer mbbook_data);
 
 static void
@@ -148,11 +152,15 @@ static void run_additem_callback(GtkButton *button,
                                  gpointer mbbook_data);
 
 static void
-run_remove_item_callback(GtkButton *button,
-                                     GtkColumnView *column_view);
+run_remove_item_callback(GtkButton *button, gpointer mbbook_data);
 
 void
 activate(GtkApplication *app, gpointer user_data);
 
+void m_AddItemToDatabase(BookData * bookdata, BuilderBook *build_book);
+
+void m_UdateItemToDatabase(BookData * bookdata, BuilderBook *build_book);
+
+void m_RemoveItemToDatabase(BuilderBook * build_book);
 
 #endif // BOOKSTORE_H

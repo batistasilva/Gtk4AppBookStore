@@ -343,6 +343,27 @@ create_book_model(void) {
     return G_LIST_MODEL(store);
 }
 
+/**
+ * @brief m_RemoveItemToDatabase
+ * @param build_book
+ */
+void m_RemoveItemToDatabase(BuilderBook *build_book)
+{
+
+  struct Content content[1];
+
+  const char * book_id = g_strdup(gtk_editable_get_text(GTK_EDITABLE(build_book->m_book_id_obj)));
+
+  content[0].value = (char *)book_id;
+  content[0].type  = "string";
+  //
+  m_DeleteItemToDB(content, 1);
+
+  runCleanToAllEntryFields(build_book);
+
+  g_print("\nItem to Removing %s ", book_id);
+
+}
 
 /**
  * @brief on_response_remove Response handler
@@ -367,6 +388,9 @@ on_response_remove(GtkAlertDialog *dialog,
         g_list_store_remove(mItem->store, mItem->selected_index);
         //g_print("\nRemoving Selected Index : %d ",mItem->selected_index);
         //on_ok_response(user_data);
+       //
+       m_RemoveItemToDatabase(mItem->build_book);
+       //
     } else if (response == GTK_RESPONSE_CANCEL) {
         callback = (GCallback) user_data;  // Use the Cancel callback
         //g_print("\nBack down to removal the selected index : %d ",mItem->selected_index);
@@ -544,7 +568,7 @@ Load_Selectade_Item_Action(GtkButton *button,
  * @brief m_AddItemToDatabase
  * @param bookdata
  */
-void m_AddItemToDatabase(BookData * bookdata){
+void m_AddItemToDatabase(BookData * bookdata, BuilderBook *build_book){
 
   struct Content content[10];
 
@@ -580,6 +604,8 @@ void m_AddItemToDatabase(BookData * bookdata){
   //
 
   m_AddItemToDB(content, 10);
+
+  runCleanToAllEntryFields(build_book);
 
 }
 
@@ -632,8 +658,7 @@ static void run_additem_callback(GtkButton *button,
         BookData * m_bookdata = getEntryToBookData(m_build_data);
 
         //Add new item from fields to database
-        m_AddItemToDatabase(m_bookdata);
-
+        m_AddItemToDatabase(m_bookdata, m_build_data);
 
         g_list_store_append(store, m_bookdata);
         //if (store != NULL) g_object_unref(store); // store can not unref, error will happens
@@ -655,14 +680,14 @@ static void run_additem_callback(GtkButton *button,
  * @param column_view
  */
 static void
-run_remove_item_callback(GtkButton *button,
-                                     GtkColumnView *column_view){
+run_remove_item_callback(GtkButton *button, gpointer mbbook_data){
     GtkWidget *window;
     window = gtk_window_new();
+    BuilderBook * m_build_data = mbbook_data;
 
     g_print("\nRun Remove Item...!!!");
 
-    GtkSingleSelection *selection_model = GTK_SINGLE_SELECTION(gtk_column_view_get_model(column_view));
+    GtkSingleSelection *selection_model = GTK_SINGLE_SELECTION(gtk_column_view_get_model(m_build_data->columnview));
 
     if (GTK_IS_SINGLE_SELECTION(selection_model)) {
 
@@ -704,6 +729,7 @@ run_remove_item_callback(GtkButton *button,
                 //
                 item_to_remove->store = store;//Set store
                 item_to_remove->selected_index = selected_index;//Set selected_idex
+                item_to_remove->build_book = m_build_data;//objects to access gui field
 
                 // Create an alert dialog with a simple message and a callback
                 show_alert_dialog(GTK_WINDOW(window),
@@ -741,10 +767,11 @@ run_remove_item_callback(GtkButton *button,
 
 
 /**
- * @brief m_AddItemToDatabase
+ * @brief m_UdateItemToDatabase
  * @param bookdata
+ * @param build_book
  */
-void m_UdateItemToDatabase(BookData * bookdata){
+void m_UdateItemToDatabase(BookData * bookdata, BuilderBook *build_book){
 
   struct Content content[11];
 
@@ -783,6 +810,8 @@ void m_UdateItemToDatabase(BookData * bookdata){
 
   m_UpdtItemToDB(content, 11);
 
+  runCleanToAllEntryFields(build_book);
+
 }
 
 
@@ -820,7 +849,7 @@ run_update_item_callback(GtkButton *button,
         BookData * m_bookdata = getEntryToBookData(m_build_data);
 
         //Update item from fields to database
-        m_UdateItemToDatabase(m_bookdata);
+        m_UdateItemToDatabase(m_bookdata, m_build_data);
 
         g_list_store_append(store, m_bookdata);
         //if (store != NULL) g_object_unref(store); // store can not unref, error will happens
@@ -835,6 +864,28 @@ run_update_item_callback(GtkButton *button,
     g_print("\nEnd Update Item...!!!");
 
 }
+
+/**
+ * @brief runCleanToAllEntryFields
+ * @param build_book
+ */
+void runCleanToAllEntryFields(BuilderBook *build_book)
+{
+    gtk_editable_set_text(GTK_EDITABLE(build_book->m_book_id_obj), "");
+    gtk_editable_set_text(GTK_EDITABLE(build_book->m_title_obj), "");
+    gtk_editable_set_text(GTK_EDITABLE(build_book->m_author_obj), "");
+    gtk_editable_set_text(GTK_EDITABLE(build_book->m_genre_obj), "");
+    gtk_editable_set_text(GTK_EDITABLE(build_book->m_publication_date_obj), "");
+    gtk_editable_set_text(GTK_EDITABLE(build_book->m_isbn_obj), "");
+    gtk_editable_set_text(GTK_EDITABLE(build_book->m_price_obj), "");
+    gtk_editable_set_text(GTK_EDITABLE(build_book->m_rating_obj), "");
+    gtk_editable_set_text(GTK_EDITABLE(build_book->m_publisher_obj), "");
+    gtk_editable_set_text(GTK_EDITABLE(build_book->m_language_obj), "");
+    gtk_editable_set_text(GTK_EDITABLE(build_book->m_page_count_obj), "");
+    //
+   // g_free(build_book);
+}
+
 
 
 void
@@ -938,7 +989,7 @@ activate(GtkApplication *app, gpointer user_data) {
     g_signal_connect(GTK_BUTTON(button_remove),
                      "clicked",
                      G_CALLBACK(run_remove_item_callback),
-                     bbook_data->columnview);
+                     bbook_data);
 
     GObject *button_updt = gtk_builder_get_object (builder,"button_updt");
 
@@ -951,6 +1002,8 @@ activate(GtkApplication *app, gpointer user_data) {
     gtk_window_present(GTK_WINDOW(window));
 
 }//End Activate
+
+
 
 
 
