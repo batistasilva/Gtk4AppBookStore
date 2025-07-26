@@ -495,6 +495,9 @@ void setBookDataToEntry(BookData * m_book_data,
     gtk_editable_set_text(GTK_EDITABLE(builder_book->m_publisher_obj), m_book_data->publisher);
     gtk_editable_set_text(GTK_EDITABLE(builder_book->m_language_obj), m_book_data->language);
     gtk_editable_set_text(GTK_EDITABLE(builder_book->m_page_count_obj), m_book_data->page_count);
+    //
+    gtk_widget_set_sensitive(GTK_WIDGET(builder_book->m_button_remove_obj), TRUE);
+    gtk_widget_set_sensitive(GTK_WIDGET(builder_book->m_button_update_obj), TRUE);
 
 }
 
@@ -657,11 +660,15 @@ static void run_additem_callback(GtkButton *button,
 
         BookData * m_bookdata = getEntryToBookData(m_build_data);
 
-        //Add new item from fields to database
-        m_AddItemToDatabase(m_bookdata, m_build_data);
+        if (m_ValidEmptyFields(m_bookdata)) {
 
-        g_list_store_append(store, m_bookdata);
-        //if (store != NULL) g_object_unref(store); // store can not unref, error will happens
+          // Add new item from fields to database
+          m_AddItemToDatabase(m_bookdata, m_build_data);
+
+          g_list_store_append(store, m_bookdata);
+          // if (store != NULL) g_object_unref(store); // store can not unref,
+          // error will happens
+        }
 
        // if (m_build_data != NULL) g_object_unref(m_build_data); // Store can not unref, error will happens
 
@@ -944,6 +951,10 @@ activate(GtkApplication *app, gpointer user_data) {
     GObject *obj_publisher  = gtk_builder_get_object(builder, "entry_publisher");
     GObject *obj_language   = gtk_builder_get_object(builder, "entry_language");
     GObject *obj_page_count = gtk_builder_get_object(builder, "entry_page_count");
+    //
+    GObject *obj_button_rm  = gtk_builder_get_object(builder, "button_remove");
+    GObject *obj_button_updt= gtk_builder_get_object(builder, "button_updt");
+
 
     model = create_book_model();
 
@@ -968,6 +979,10 @@ activate(GtkApplication *app, gpointer user_data) {
     bbook_data->m_publisher_obj  = obj_publisher;
     bbook_data->m_language_obj   = obj_language;
     bbook_data->m_page_count_obj = obj_page_count;
+    //
+    bbook_data->m_button_remove_obj = obj_button_rm;
+    bbook_data->m_button_update_obj = obj_button_updt;
+
 
 
     GObject *button_add = gtk_builder_get_object (builder,"button_add");
@@ -998,12 +1013,89 @@ activate(GtkApplication *app, gpointer user_data) {
                      G_CALLBACK(run_update_item_callback),
                      bbook_data);
 
+    GObject *button_clean = gtk_builder_get_object (builder,"button_clean");
+
+    g_signal_connect(GTK_BUTTON(button_clean),
+                     "clicked",
+                     G_CALLBACK(run_clean_entry_fields_callback),
+                     bbook_data);
+
     gtk_application_add_window (app, window);
     gtk_window_present(GTK_WINDOW(window));
 
 }//End Activate
 
 
+/**
+ * @brief run_clean_entry_fields_callback
+ * @param button_clean
+ * @param mbbook_data
+ */
+static void
+run_clean_entry_fields_callback(GtkButton *button_clean,
+                                gpointer mbbook_data)
+{
+  BuilderBook * m_build_data = mbbook_data;
 
+  runCleanToAllEntryFields(m_build_data);
+}
 
+/**
+ * @brief m_ValidEmptyFields
+ * @param bookdata
+ * @return true or false
+ */
+bool m_ValidEmptyFields(BookData *bookdata)
+{
+    if(is_effectively_empty(bookdata->title)){
+       printf("\nField (Title) must be filled..!");
+       return false;
+    }
 
+    if(is_effectively_empty(bookdata->author)){
+       printf("\nField (Author) must be filled..!");
+       return false;
+    }
+
+    if(is_effectively_empty(bookdata->genre)){
+       printf("\nField (Genre) must be filled..!");
+       return false;
+    }
+
+    if(is_effectively_empty(bookdata->publication_date)){
+       printf("\nField (Publication date) must be filled..!");
+       return false;
+    }
+
+    if(is_effectively_empty(bookdata->isbn)){
+       printf("\nField (Isbn) must be filled..!");
+       return false;
+    }
+
+    if(is_effectively_empty(bookdata->price)){
+       printf("\nField (Price) must be filled..!");
+       return false;
+    }
+
+    if(is_effectively_empty(bookdata->rating)){
+       printf("\nField (Rating) must be filled..!");
+       return false;
+    }
+
+   if(is_effectively_empty(bookdata->publisher)){
+       printf("\nField (Publisher) must be filled..!");
+       return false;
+    }
+
+   if(is_effectively_empty(bookdata->language)){
+       printf("\nField (Language) must be filled..!");
+       return false;
+    }
+
+    if(is_effectively_empty(bookdata->page_count)){
+       printf("\nField (Page count) must be filled..!");
+       return false;
+    }
+
+return true;
+}

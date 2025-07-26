@@ -4,6 +4,7 @@
 #include <glib/gi18n.h>
 #include <gtk-4.0/gtk/gtkbuilder.h>
 #include <bookstore_dao.h>
+#include <util.h>
 
 G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 
@@ -71,6 +72,10 @@ typedef struct {
     GObject * m_publisher_obj;
     GObject * m_language_obj;
     GObject * m_page_count_obj;
+    //
+    GObject * m_button_remove_obj;
+    GObject * m_button_update_obj;
+
 } BuilderBook;
 
 typedef struct {
@@ -154,6 +159,10 @@ static void run_additem_callback(GtkButton *button,
 static void
 run_remove_item_callback(GtkButton *button, gpointer mbbook_data);
 
+static void
+run_clean_entry_fields_callback(GtkButton *button, gpointer mbbook_data);
+
+
 void
 activate(GtkApplication *app, gpointer user_data);
 
@@ -162,5 +171,7 @@ void m_AddItemToDatabase(BookData * bookdata, BuilderBook *build_book);
 void m_UdateItemToDatabase(BookData * bookdata, BuilderBook *build_book);
 
 void m_RemoveItemToDatabase(BuilderBook * build_book);
+
+bool m_ValidEmptyFields(BookData * bookdata);
 
 #endif // BOOKSTORE_H

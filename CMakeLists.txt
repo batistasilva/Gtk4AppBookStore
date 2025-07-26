@@ -26,6 +26,8 @@ include_directories(${GTK4_INCLUDE_DIRS} ${CMAKE_SOURCE_DIR})
 add_executable(Gtk4AppBookStore main.c
     util/mysql_utils.h
     util/mysql_utils.c
+    util/util.h
+    util/util.c
     gui/gtkaddtolist.xml
     dao/my.cnf
     src/bookstore.h
@@ -33,8 +35,6 @@ add_executable(Gtk4AppBookStore main.c
     gui/css/style.css
     dao/bookstore_dao.c
     dao/bookstore_dao.h
-
-
 
 )
 
