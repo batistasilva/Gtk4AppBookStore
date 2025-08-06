@@ -131,7 +131,7 @@ run_clean_entry_fields_callback(GtkButton *button, gpointer mbbook_data);
 
 
 void
-activate(GtkApplication *app, gpointer user_data);
+book_mng_activate(GtkApplication *app, gpointer param);
 
 void m_AddItemToDatabase(BookData * bookdata,
                          BuilderBook *build_book);

@@ -44,6 +44,10 @@ add_executable(Gtk4AppBookStore main.c
     dao/bookstore_dao.h
     util-app/book-struct-util.h
     util-dbg/show-msg.c util-dbg/error_log.h util-dbg/show-msg.h
+    src/menu-app.h
+    src/menu-app.c
+    gui/screenshot/bookstore-screenshot-2.png
+    gui/screenshot/bookstore-screenshot-1.png
 
 
 )

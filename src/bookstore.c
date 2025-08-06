@@ -862,7 +862,7 @@ run_update_item_callback(GtkButton *button,
 
 
 void
-activate(GtkApplication *app, gpointer user_data) {
+book_mng_activate(GtkApplication *app, gpointer param){
 
     g_autoptr(GtkBuilder) builder = NULL;
 
@@ -887,7 +887,7 @@ activate(GtkApplication *app, gpointer user_data) {
     GAction *action;
 
     // g_autoptr(GtkBuilder) builder = NULL;
-    GtkWindow *window;
+    GtkWindow *main_window =  GTK_WINDOW(param);
 
     /***
      * Ensure our custom object type is registered with the GObject system
@@ -898,7 +898,11 @@ activate(GtkApplication *app, gpointer user_data) {
     builder = gtk_builder_new_from_file("../gui/gtkaddtolist.xml");
 
     /* Connect signal handlers to the constructed widgets. */
-    window =  GTK_WINDOW(gtk_builder_get_object (builder, "main_window"));
+    GtkWindow *window =  GTK_WINDOW(gtk_builder_get_object (builder, "main_window"));
+
+    // Set the main window as parent
+    gtk_window_set_transient_for(GTK_WINDOW(window), main_window);
+    gtk_window_set_modal(GTK_WINDOW(window), TRUE);
 
     gtk_picture_new_for_filename("../gui/images/bookstore.png");
 
