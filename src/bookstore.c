@@ -438,6 +438,7 @@ Load_Selectade_Item_Action(GtkButton *button,
     } else {
         g_print("No row selected.\n");
     }
+
 }
 
 /**
@@ -692,7 +693,7 @@ run_remove_item_callback(GtkButton *button, gpointer mbbook_data){
                 g_print("Message: : %s \n", msg);
 
                 // Create an alert dialog with a simple message and a callback
-                int response = gtk_alert_ask(msg,GTK_WINDOW(window), "Yes", "Cancel");
+                int response = gtk_alert_ask(msg,GTK_WINDOW(m_build_data->window), "Yes", "Cancel");
 
                 if (response == GTK_RESPONSE_ACCEPT){
                   m_RemoveItemToDatabase(m_build_data);
