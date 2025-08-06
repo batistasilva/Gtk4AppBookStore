@@ -1,10 +1,10 @@
 #ifndef BOOKSTORE_H
 #define BOOKSTORE_H
-#include <gtk/gtk.h>
-#include <glib/gi18n.h>
-#include <gtk-4.0/gtk/gtkbuilder.h>
+#include <book-struct-util.h>
 #include <bookstore_dao.h>
+#include <alert_handler.h>
 #include <util.h>
+#include <gtk/gtk.h> // Also include GTK header here for definitions
 
 G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 
@@ -52,37 +52,6 @@ struct
 struct _BookDataClass {
     GObjectClass parent_class;
 };
-
-/**
-  This is to send the BUILDER OBJ to other functions.
-  This way I can set data to the input fields,
-  I can also load, define and delete data from the
-  ColumnView model.
- **/
-typedef struct {
-    GtkColumnView * columnview;
-    GObject * m_book_id_obj;
-    GObject * m_title_obj;
-    GObject * m_author_obj;
-    GObject * m_genre_obj;
-    GObject * m_publication_date_obj;
-    GObject * m_isbn_obj;
-    GObject * m_price_obj;
-    GObject * m_rating_obj;
-    GObject * m_publisher_obj;
-    GObject * m_language_obj;
-    GObject * m_page_count_obj;
-    //
-    GObject * m_button_remove_obj;
-    GObject * m_button_update_obj;
-
-} BuilderBook;
-
-typedef struct {
-    GListStore *store;
-    guint selected_index;
-    BuilderBook * build_book;
-} ItemToRemove;
 
 
 static void
@@ -134,16 +103,14 @@ on_response_remove(GtkAlertDialog *dialog,
                    gint response,
                    gpointer user_data);
 
-static void
-show_alert_dialog(GtkWindow *parent_window,
-                  const char *message,
-                  GCallback on_sl_response,
-                  gpointer ok_data,
-                  ItemToRemove * mitem);
+// static void
+// show_alert_dialog(GtkWindow *parent_window,
+//                   const char *message,
+//                   GCallback on_sl_response,
+//                   gpointer ok_data,
+//                   ItemToRemove * mitem);
 
 void setBookDataToEntry(BookData * m_book_data, gpointer mbbook_data);
-
-void runCleanToAllEntryFields(BuilderBook *build_book);
 
 
 BookData * getEntryToBookData(gpointer mbbook_data);
@@ -166,12 +133,16 @@ run_clean_entry_fields_callback(GtkButton *button, gpointer mbbook_data);
 void
 activate(GtkApplication *app, gpointer user_data);
 
-void m_AddItemToDatabase(BookData * bookdata, BuilderBook *build_book);
+void m_AddItemToDatabase(BookData * bookdata,
+                         BuilderBook *build_book);
 
-void m_UdateItemToDatabase(BookData * bookdata, BuilderBook *build_book);
+void m_UdateItemToDatabase(BookData * bookdata,
+                           BuilderBook *build_book);
+
+bool m_ValidEmptyFields(BookData * bookdata);
 
 void m_RemoveItemToDatabase(BuilderBook * build_book);
 
-bool m_ValidEmptyFields(BookData * bookdata);
+void runCleanToAllEntryFields(BuilderBook *build_book);
 
 #endif // BOOKSTORE_H

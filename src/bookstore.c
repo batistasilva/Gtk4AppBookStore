@@ -1,4 +1,6 @@
 #include <bookstore.h>
+#include "../util-app/alert_handler.h"
+// #include <gtk/gtk.h> // Also include GTK header here for definitions
 
 /**
  * @brief book_data_set_property
@@ -343,135 +345,6 @@ create_book_model(void) {
     return G_LIST_MODEL(store);
 }
 
-/**
- * @brief m_RemoveItemToDatabase
- * @param build_book
- */
-void m_RemoveItemToDatabase(BuilderBook *build_book)
-{
-
-  struct Content content[1];
-
-  const char * book_id = g_strdup(gtk_editable_get_text(GTK_EDITABLE(build_book->m_book_id_obj)));
-
-  content[0].value = (char *)book_id;
-  content[0].type  = "string";
-  //
-  m_DeleteItemToDB(content, 1);
-
-  runCleanToAllEntryFields(build_book);
-
-  g_print("\nItem to Removing %s ", book_id);
-
-}
-
-/**
- * @brief on_response_remove Response handler
- * to handle OK/Cancel actions
- * @param dialog
- * @param response
- * @param user_data
- */
-static void
-on_response_remove(GtkAlertDialog *dialog,
-                   gint response,
-                   gpointer user_data)
-{
-    GCallback callback = NULL;
-    gpointer data = NULL;
-    ItemToRemove *mItem = (ItemToRemove *) user_data;
-
-    // Check the response ID and decide which callback to use
-    if (response == GTK_RESPONSE_OK) {
-        callback = (GCallback) user_data;  // Use the OK callback
-        //remove store item
-        g_list_store_remove(mItem->store, mItem->selected_index);
-        //g_print("\nRemoving Selected Index : %d ",mItem->selected_index);
-        //on_ok_response(user_data);
-       //
-       m_RemoveItemToDatabase(mItem->build_book);
-       //
-    } else if (response == GTK_RESPONSE_CANCEL) {
-        callback = (GCallback) user_data;  // Use the Cancel callback
-        //g_print("\nBack down to removal the selected index : %d ",mItem->selected_index);
-    }
-
-    if (callback != NULL) {
-        // Call the appropriate callback (OK or Cancel)
-        callback = (GCallback) user_data;  // Use the Cancel callback
-    }
-
-    g_free(mItem);     // Libera a estrutura se foi g_new/malloc
-
-    // Close the dialog after response
-    gtk_window_destroy(GTK_WINDOW(dialog));
-}
-
-
-/**
- * @brief show_alert_dialog Show a Dialog Modal
- * Message to confirmation one action.
- * @param parent_window Window
- * @param message Message
- * @param on_sl_response Callback(Action)
- * to be executed
- * @param ok_data return from button
- * @param mitem Structure with data to
- * be used in action.
- */
-static void
-show_alert_dialog(GtkWindow *parent_window,
-                              const char *message,
-                              GCallback on_sl_response,
-                              gpointer ok_data,
-                              ItemToRemove * mitem)
-{
-    GtkWidget *content_area, *label;
-
-    GtkWidget *dialog = gtk_dialog_new();    
-    gtk_window_set_transient_for(GTK_WINDOW(dialog), parent_window);
-    gtk_window_set_title(GTK_WINDOW(dialog), "Message!");
-
-    // Add OK and Cancel buttons explicitly
-    gtk_dialog_add_button(GTK_DIALOG(dialog), "OK", GTK_RESPONSE_OK);
-    gtk_dialog_add_button(GTK_DIALOG(dialog), "Cancel", GTK_RESPONSE_CANCEL);
-
-    // Get buttons and apply CSS classes
-    GtkWidget *ok_btn = gtk_dialog_get_widget_for_response(GTK_DIALOG(dialog),
-                                                           GTK_RESPONSE_OK);
-
-    GtkWidget *cancel_btn = gtk_dialog_get_widget_for_response(GTK_DIALOG(dialog),
-                                                               GTK_RESPONSE_CANCEL);
-
-    gtk_widget_add_css_class(ok_btn, "confirm-button");
-    gtk_widget_add_css_class(cancel_btn, "cancel-button");
-
-    // Load CSS
-    GtkCssProvider *provider = gtk_css_provider_new();
-
-    gtk_css_provider_load_from_path(provider, "../../gui/css/style.css");
-    gtk_style_context_add_provider_for_display(
-        gdk_display_get_default(), GTK_STYLE_PROVIDER(provider),
-        GTK_STYLE_PROVIDER_PRIORITY_USER);
-
-    // Get the content area of the dialog
-    content_area = gtk_dialog_get_content_area(GTK_DIALOG(dialog));
-
-    // Create a label widget to act as the body of the dialog
-    label = gtk_label_new(message);
-    gtk_widget_add_css_class(label, "alert-message");
-    gtk_box_append(GTK_BOX(content_area), label);
-
-    // Show the dialog
-    gtk_widget_show(GTK_WIDGET(dialog));
-
-    g_signal_connect_data(dialog,
-                          "response",
-                          G_CALLBACK(on_sl_response),
-                          mitem,            // Seu user_data
-                          NULL, // Função para liberar o user_data
-                          0);
-}
 
 /**
  * Populate the entry fields.
@@ -571,45 +444,133 @@ Load_Selectade_Item_Action(GtkButton *button,
  * @brief m_AddItemToDatabase
  * @param bookdata
  */
-void m_AddItemToDatabase(BookData * bookdata, BuilderBook *build_book){
+void m_AddItemToDatabase(BookData * bookdata,
+                      BuilderBook * build_book){
 
-  struct Content content[10];
+/*
+    // Allocate memory for the array of pointers.
+    Person* person_array = (Person*)malloc(sizeof(Person) * 1);//1 for one people
 
-  content[0].value = bookdata->title;
-  content[0].type  = "string";
-  //
-  content[1].value = bookdata->author;
-  content[1].type  = "string";
-  //
-  content[2].value = bookdata->genre;
-  content[2].type  = "string";
-  //
-  content[3].value = bookdata->isbn;
-  content[3].type = "string";
-  //
-  content[4].value = bookdata->price;
-  content[4].type = "string";
-  //
-  content[5].value = bookdata->rating;
-  content[5].type = "string";
-  //
-  content[6].value = bookdata->publication_date;
-  content[6].type = "string";
-  //
-  content[7].value = bookdata->publisher;
-  content[7].type = "string";
-  //
-  content[8].value = bookdata->language;
-  content[8].type = "string";
-  //
-  content[9].value = bookdata->page_count;
-  content[9].type = "string";
-  //
+ */
+  Content content_rs;
+  Content * content = (Content*)malloc(sizeof(Content) * 10);
 
-  m_AddItemToDB(content, 10);
 
-  runCleanToAllEntryFields(build_book);
+  safe_strcpy(content[0].m_oper.field_name,
+              bookdata->title,
+              sizeof(content[0].m_oper.field_name));
+  safe_strcpy(content[0].type,"string",sizeof((const char*)"string"));
+  //
+  safe_strcpy(content[1].m_oper.field_name,
+              bookdata->author,
+              sizeof(content[1].m_oper.field_name));
+  safe_strcpy(content[1].type, "string", sizeof((const char *)"string"));
+  //
+  content->oper_type = OP_INSERT;
+  //
+  safe_strcpy(content[2].m_oper.field_name,
+              bookdata->genre,
+              sizeof(content[2].m_oper.field_name));
+  safe_strcpy(content[2].type, "string", sizeof((const char*)"string"));
+  //
+  safe_strcpy(content[3].m_oper.field_name,
+              bookdata->isbn,
+              sizeof(content[3].m_oper.field_name));
+  safe_strcpy(content[3].type, "string", sizeof((const char *)"string"));
+  //
+  safe_strcpy(content[4].m_oper.field_name,
+              bookdata->price,
+              sizeof(content[4].m_oper.field_name));
+  safe_strcpy(content[4].type, "string", sizeof((const char*)"string"));
+  //
+  safe_strcpy(content[5].m_oper.field_name,
+              bookdata->rating,
+              sizeof(content[5].m_oper.field_name));
+  safe_strcpy(content[5].type, "string", sizeof((const char*)"string"));
+  //
+  safe_strcpy(content[6].m_oper.field_name,
+              bookdata->publication_date,
+              sizeof(content[6].m_oper.field_name));
+  safe_strcpy(content[6].type, "string",sizeof((const char*)"string"));
+  //
+  safe_strcpy(content[7].m_oper.field_name,
+              bookdata->publisher,
+              sizeof(content[7].m_oper.field_name));
+  safe_strcpy(content[7].type, "string",sizeof((const char*)"string"));
+  //
+  safe_strcpy(content[8].m_oper.field_name,
+              bookdata->language,
+              sizeof(content[8].m_oper.field_name));
+  safe_strcpy(content[8].type, "string",sizeof((const char*)"string"));
+  //
+  safe_strcpy(content[9].m_oper.field_name,
+              bookdata->page_count,
+              sizeof(content[9].m_oper.field_name));
+  safe_strcpy(content[9].type, "string",sizeof((const char*)"string"));
+  //
+  content_rs = m_AddItemToDB(content, 10);
 
+  if(content_rs.m_oper.status){
+      runCleanToAllEntryFields(build_book);
+      gtk_alert_show_info(content_rs.m_oper.sql_res_msg, build_book->window);
+  }else{
+      gtk_alert_show_error(content_rs.m_oper.sql_res_msg, build_book->window);
+  }
+
+  //clean allocate memory
+  free(content);
+}
+
+
+/**
+ * @brief m_RemoveItemToDatabase
+ * @param build_book
+ */
+void m_RemoveItemToDatabase(BuilderBook *build_book)
+{
+  Content content_rs;
+  Content content;
+
+  const char * author_name = g_strdup(gtk_editable_get_text(GTK_EDITABLE(build_book->m_author_obj)));
+
+  const char * book_id = g_strdup(gtk_editable_get_text(GTK_EDITABLE(build_book->m_book_id_obj)));
+
+  safe_strcpy(content.m_oper.field_name, author_name, sizeof(content.m_oper.field_name));
+  content.oper_type = OP_DELETE;
+  content.m_oper.field_id = atoi(book_id);
+  safe_strcpy(content.type, "int",sizeof("int"));
+  //
+  content_rs = m_DeleteItemToDB(content);
+
+  if(content_rs.m_oper.status){
+      runCleanToAllEntryFields(build_book);
+      gtk_alert_show_info(content_rs.m_oper.sql_res_msg, build_book->window);
+  }else{
+      gtk_alert_show_error(content_rs.m_oper.sql_res_msg, build_book->window);
+  }
+  g_print("\nItem to Removing %s ", book_id);
+
+}
+
+/**
+ * @brief runCleanToAllEntryFields
+ * @param build_book
+ */
+void runCleanToAllEntryFields(BuilderBook *build_book)
+{
+    gtk_editable_set_text(GTK_EDITABLE(build_book->m_book_id_obj), "");
+    gtk_editable_set_text(GTK_EDITABLE(build_book->m_title_obj), "");
+    gtk_editable_set_text(GTK_EDITABLE(build_book->m_author_obj), "");
+    gtk_editable_set_text(GTK_EDITABLE(build_book->m_genre_obj), "");
+    gtk_editable_set_text(GTK_EDITABLE(build_book->m_publication_date_obj), "");
+    gtk_editable_set_text(GTK_EDITABLE(build_book->m_isbn_obj), "");
+    gtk_editable_set_text(GTK_EDITABLE(build_book->m_price_obj), "");
+    gtk_editable_set_text(GTK_EDITABLE(build_book->m_rating_obj), "");
+    gtk_editable_set_text(GTK_EDITABLE(build_book->m_publisher_obj), "");
+    gtk_editable_set_text(GTK_EDITABLE(build_book->m_language_obj), "");
+    gtk_editable_set_text(GTK_EDITABLE(build_book->m_page_count_obj), "");
+    //
+   // g_free(build_book);
 }
 
 
@@ -730,20 +691,15 @@ run_remove_item_callback(GtkButton *button, gpointer mbbook_data){
 
                 g_print("Message: : %s \n", msg);
 
-
-                //Set item to remove
-                ItemToRemove *item_to_remove = g_new(ItemToRemove, 1);
-                //
-                item_to_remove->store = store;//Set store
-                item_to_remove->selected_index = selected_index;//Set selected_idex
-                item_to_remove->build_book = m_build_data;//objects to access gui field
-
                 // Create an alert dialog with a simple message and a callback
-                show_alert_dialog(GTK_WINDOW(window),
-                                  msg,
-                                  G_CALLBACK(on_response_remove),
-                                  NULL,
-                                  item_to_remove);
+                int response = gtk_alert_ask(msg,GTK_WINDOW(window), "Yes", "Cancel");
+
+                if (response == GTK_RESPONSE_ACCEPT){
+                  m_RemoveItemToDatabase(m_build_data);
+                  g_print("User chose YES\n");
+                }else{
+                  g_print("User chose CANCEL\n");
+                }
 
                 g_print("Selected Row Data:\n");
                 g_print("  BookID: %s\n", book->book_id);
@@ -777,47 +733,78 @@ run_remove_item_callback(GtkButton *button, gpointer mbbook_data){
  * @brief m_UdateItemToDatabase
  * @param bookdata
  * @param build_book
+ * @param parent
  */
-void m_UdateItemToDatabase(BookData * bookdata, BuilderBook *build_book){
+void m_UdateItemToDatabase(BookData * bookdata,
+                        BuilderBook * build_book){
+  Content content_rs;
+  Content * content = (Content*)malloc(sizeof(Content) * 11);
+//
+  safe_strcpy(content[0].m_oper.field_name,
+              bookdata->title,
+              sizeof(content[0].m_oper.field_name));
+  safe_strcpy(content[0].type,"string",sizeof("string"));
+  //
+  safe_strcpy(content[1].m_oper.field_name,
+              bookdata->author,
+              sizeof(content[1].m_oper.field_name));
+  safe_strcpy(content[1].type, "string", sizeof("string"));
+  content[1].oper_type = OP_UPDATE;
+  //
+  safe_strcpy(content[2].m_oper.field_name,
+              bookdata->genre,
+              sizeof(content[2].m_oper.field_name));
+  safe_strcpy(content[2].type, "string", sizeof("string"));
+  //
+  safe_strcpy(content[3].m_oper.field_name,
+              bookdata->isbn,
+              sizeof(content[3].m_oper.field_name));
+  safe_strcpy(content[3].type, "string", sizeof("string"));
+  //
+  safe_strcpy(content[4].m_oper.field_name,
+              bookdata->price,
+              sizeof(content[4].m_oper.field_name));
+  safe_strcpy(content[4].type, "string", sizeof("string"));
+  //
+  safe_strcpy(content[5].m_oper.field_name,
+              bookdata->rating,
+              sizeof(content[5].m_oper.field_name));
+  safe_strcpy(content[5].type, "string", sizeof("string"));
+  //
+  safe_strcpy(content[6].m_oper.field_name,
+              bookdata->publication_date,
+              sizeof(content[6].m_oper.field_name));
+  safe_strcpy(content[6].type, "string",sizeof("string"));
+  //
+  safe_strcpy(content[7].m_oper.field_name,
+              bookdata->publisher,
+              sizeof(content[7].m_oper.field_name));
+  safe_strcpy(content[7].type, "string",sizeof("string"));
+  //
+  safe_strcpy(content[8].m_oper.field_name,
+              bookdata->language,
+              sizeof(content[8].m_oper.field_name));
+  safe_strcpy(content[8].type, "string",sizeof("string"));
+  //
+  safe_strcpy(content[9].m_oper.field_name,
+              bookdata->page_count,
+              sizeof(content[9].m_oper.field_name));
+  safe_strcpy(content[9].type, "string",sizeof("string"));
+  //
+  content[10].m_oper.field_id = atoi(bookdata->book_id);
+  safe_strcpy(content[10].type, "int", sizeof("int"));
 
-  struct Content content[11];
+  content_rs = m_UpdtItemToDB(content, 11);
 
-  content[0].value = bookdata->title;
-  content[0].type  = "string";
-  //
-  content[1].value = bookdata->author;
-  content[1].type  = "string";
-  //
-  content[2].value = bookdata->genre;
-  content[2].type  = "string";
-  //
-  content[3].value = bookdata->isbn;
-  content[3].type = "string";
-  //
-  content[4].value = bookdata->price;
-  content[4].type = "string";
-  //
-  content[5].value = bookdata->rating;
-  content[5].type = "string";
-  //
-  content[6].value = bookdata->publication_date;
-  content[6].type = "string";
-  //
-  content[7].value = bookdata->publisher;
-  content[7].type = "string";
-  //
-  content[8].value = bookdata->language;
-  content[8].type = "string";
-  //
-  content[9].value = bookdata->page_count;
-  content[9].type = "string";
-  //
-  content[10].value = bookdata->book_id;
-  content[10].type = "string";
+  if(content_rs.m_oper.status){
+      runCleanToAllEntryFields(build_book);
+      gtk_alert_show_info(content_rs.m_oper.sql_res_msg, build_book->window);
+  }else{
+      gtk_alert_show_error(content_rs.m_oper.sql_res_msg, build_book->window);
+  }
 
-  m_UpdtItemToDB(content, 11);
-
-  runCleanToAllEntryFields(build_book);
+  //clean allocate memory
+  free(content);
 
 }
 
@@ -872,28 +859,6 @@ run_update_item_callback(GtkButton *button,
 
 }
 
-/**
- * @brief runCleanToAllEntryFields
- * @param build_book
- */
-void runCleanToAllEntryFields(BuilderBook *build_book)
-{
-    gtk_editable_set_text(GTK_EDITABLE(build_book->m_book_id_obj), "");
-    gtk_editable_set_text(GTK_EDITABLE(build_book->m_title_obj), "");
-    gtk_editable_set_text(GTK_EDITABLE(build_book->m_author_obj), "");
-    gtk_editable_set_text(GTK_EDITABLE(build_book->m_genre_obj), "");
-    gtk_editable_set_text(GTK_EDITABLE(build_book->m_publication_date_obj), "");
-    gtk_editable_set_text(GTK_EDITABLE(build_book->m_isbn_obj), "");
-    gtk_editable_set_text(GTK_EDITABLE(build_book->m_price_obj), "");
-    gtk_editable_set_text(GTK_EDITABLE(build_book->m_rating_obj), "");
-    gtk_editable_set_text(GTK_EDITABLE(build_book->m_publisher_obj), "");
-    gtk_editable_set_text(GTK_EDITABLE(build_book->m_language_obj), "");
-    gtk_editable_set_text(GTK_EDITABLE(build_book->m_page_count_obj), "");
-    //
-   // g_free(build_book);
-}
-
-
 
 void
 activate(GtkApplication *app, gpointer user_data) {
@@ -923,19 +888,22 @@ activate(GtkApplication *app, gpointer user_data) {
     // g_autoptr(GtkBuilder) builder = NULL;
     GtkWindow *window;
 
-    /* Ensure our custom object type is registered with the GObject system
+    /***
+     * Ensure our custom object type is registered with the GObject system
      * before attempting to utilize it through GtkBuilder.
-     */
+     **/
     g_type_ensure (BOOK_TYPE_DATA);
 
-    builder = gtk_builder_new_from_file("../../gui/gtkaddtolist.xml");
+    builder = gtk_builder_new_from_file("../gui/gtkaddtolist.xml");
 
     /* Connect signal handlers to the constructed widgets. */
     window =  GTK_WINDOW(gtk_builder_get_object (builder, "main_window"));
 
+    gtk_picture_new_for_filename("../gui/images/bookstore.png");
+
     g_object_add_weak_pointer(G_OBJECT(window), (gpointer *) & window);
 
-    // //Get columnview from builder
+    //Get columnview from builder
     //GObject *column_view = gtk_builder_get_object(builder, "column_view");
 
     //Get the whole object that the application needs the builder.
@@ -966,6 +934,7 @@ activate(GtkApplication *app, gpointer user_data) {
     //Creat a stance the bookdata
     bbook_data = g_new(BuilderBook, 1);
     //
+    bbook_data->window           = window;
     bbook_data->columnview       = GTK_COLUMN_VIEW(columnview);
     //
     bbook_data->m_book_id_obj    = obj_book_id;
