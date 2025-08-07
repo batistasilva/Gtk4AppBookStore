@@ -49,7 +49,6 @@ add_executable(Gtk4AppBookStore main.c
     gui/screenshot/bookstore-screenshot-2.png
     gui/screenshot/bookstore-screenshot-1.png
 
-
 )
 
 # Include and link MySQL client

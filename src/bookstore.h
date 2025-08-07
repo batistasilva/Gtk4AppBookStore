@@ -14,7 +14,7 @@ G_GNUC_BEGIN_IGNORE_DEPRECATIONS
 typedef struct _BookData BookData;
 
 G_DECLARE_FINAL_TYPE(BookData, book_data, BOOK, DATA, GObject)
-static gboolean result_remove_item = false;
+//static gboolean result_remove_item = false;
 
 enum
 {
