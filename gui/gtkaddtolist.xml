@@ -305,7 +305,7 @@
                         <property name="model">
                           <object class="GtkSingleSelection" id="single_select_model_id">
                             <property name="model">
-                              <object class="GListStore" id="glist_store_model_id">
+                              <object class="GListStore" id="glist_store">
                                 <property name="item-type">BookData</property>
                               </object>
                             </property>
@@ -314,31 +314,35 @@
                         <property name="show-column-separators">True</property>
                         <property name="show-row-separators">True</property>
                         <child>
-                          <object class="GtkColumnViewColumn" id="colum_first_item">
+                          <object class="GtkColumnViewColumn" id="column_title">
+                          <property name="title">Title</property>
                             <property name="expand">True</property>
                             <property name="factory">
                               <object class="GtkBuilderListItemFactory" id="first_column_factory_id">
-                                <property name="bytes"><![CDATA[                    <?xml version="1.0" encoding="UTF-8"?>
-                    <interface>
-                      <template class="GtkListItem">
-                        <property name="child">
-                          <object class="GtkLabel">
-                            <binding name="label">
-                              <lookup name="title" type="BookData">
-                                <lookup name="item">GtkListItem</lookup>
-                              </lookup>
-                            </binding>
-                          </object>
-                        </property>
-                      </template>
-                    </interface>]]></property>
+                                <property name="bytes"><![CDATA[
+                                <?xml version="1.0" encoding="UTF-8"?>
+                                <interface>
+                                  <template class="GtkListItem">
+                                    <property name="child">
+                                      <object class="GtkLabel">
+                                      <property name="xalign">0</property>
+                                        <binding name="label">
+                                          <lookup name="title" type="BookData">
+                                            <lookup name="item">GtkListItem</lookup>
+                                          </lookup>
+                                        </binding>
+                                      </object>
+                                    </property>
+                                  </template>
+                                </interface>]]>
+                              </property>
                               </object>
                             </property>
                             <property name="title">Title:</property>
                           </object>
                         </child>
                         <child>
-                          <object class="GtkColumnViewColumn" id="column_second_item">
+                          <object class="GtkColumnViewColumn" id="column_author">
                             <property name="expand">True</property>
                             <property name="factory">
                               <object class="GtkBuilderListItemFactory" id="second_column_factory_id">
@@ -347,6 +351,7 @@
                       <template class="GtkListItem">
                         <property name="child">
                           <object class="GtkLabel">
+                           <property name="xalign">0</property>
                             <binding name="label">
                               <lookup name="author" type="BookData">
                                 <lookup name="item">GtkListItem</lookup>
@@ -362,7 +367,7 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkColumnViewColumn" id="column_third_item">
+                          <object class="GtkColumnViewColumn" id="column_genre">
                             <property name="expand">True</property>
                             <property name="factory">
                               <object class="GtkBuilderListItemFactory" id="third_column_factory_id">
@@ -371,6 +376,7 @@
                       <template class="GtkListItem">
                         <property name="child">
                           <object class="GtkLabel">
+                           <property name="xalign">0</property>
                             <binding name="label">
                               <lookup name="genre" type="BookData">
                                 <lookup name="item">GtkListItem</lookup>
@@ -386,7 +392,7 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkColumnViewColumn" id="column_fourth_item">
+                          <object class="GtkColumnViewColumn" id="column_publication_date">
                             <property name="expand">True</property>
                             <property name="factory">
                               <object class="GtkBuilderListItemFactory" id="fourth_column_factory_id">
@@ -395,6 +401,7 @@
                       <template class="GtkListItem">
                         <property name="child">
                           <object class="GtkLabel">
+                           <property name="xalign">0</property>
                             <binding name="label">
                               <lookup name="publication_date" type="BookData">
                                 <lookup name="item">GtkListItem</lookup>
@@ -410,7 +417,7 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkColumnViewColumn" id="column_fifth_item">
+                          <object class="GtkColumnViewColumn" id="column_isbn">
                             <property name="expand">True</property>
                             <property name="factory">
                               <object class="GtkBuilderListItemFactory" id="fifth_column_factory_id">
@@ -419,6 +426,7 @@
                       <template class="GtkListItem">
                         <property name="child">
                           <object class="GtkLabel">
+                           <property name="xalign">0</property>
                             <binding name="label">
                               <lookup name="isbn" type="BookData">
                                 <lookup name="item">GtkListItem</lookup>
@@ -434,7 +442,7 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkColumnViewColumn" id="column_sixth_item">
+                          <object class="GtkColumnViewColumn" id="column_price">
                             <property name="expand">True</property>
                             <property name="factory">
                               <object class="GtkBuilderListItemFactory" id="sixth_column_factory_id">
@@ -443,6 +451,7 @@
                       <template class="GtkListItem">
                         <property name="child">
                           <object class="GtkLabel">
+                           <property name="xalign">0</property>
                             <binding name="label">
                               <lookup name="price" type="BookData">
                                 <lookup name="item">GtkListItem</lookup>
@@ -458,7 +467,7 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkColumnViewColumn" id="column_seventh_item">
+                          <object class="GtkColumnViewColumn" id="column_rating">
                             <property name="expand">True</property>
                             <property name="factory">
                               <object class="GtkBuilderListItemFactory" id="seventh_column_factory_id">
@@ -467,6 +476,7 @@
                       <template class="GtkListItem">
                         <property name="child">
                           <object class="GtkLabel">
+                           <property name="xalign">0</property>
                             <binding name="label">
                               <lookup name="rating" type="BookData">
                                 <lookup name="item">GtkListItem</lookup>
@@ -482,7 +492,7 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkColumnViewColumn" id="column_eight_item">
+                          <object class="GtkColumnViewColumn" id="column_publisher">
                             <property name="expand">True</property>
                             <property name="factory">
                               <object class="GtkBuilderListItemFactory" id="eight_column_factory_id">
@@ -491,6 +501,7 @@
                       <template class="GtkListItem">
                         <property name="child">
                           <object class="GtkLabel">
+                           <property name="xalign">0</property>
                             <binding name="label">
                               <lookup name="publisher" type="BookData">
                                 <lookup name="item">GtkListItem</lookup>
@@ -506,7 +517,7 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkColumnViewColumn" id="colum_ninth_item">
+                          <object class="GtkColumnViewColumn" id="column_language">
                             <property name="expand">True</property>
                             <property name="factory">
                               <object class="GtkBuilderListItemFactory" id="ninth_column_factory_id">
@@ -515,6 +526,7 @@
                       <template class="GtkListItem">
                         <property name="child">
                           <object class="GtkLabel">
+                           <property name="xalign">0</property>
                             <binding name="label">
                               <lookup name="language" type="BookData">
                                 <lookup name="item">GtkListItem</lookup>
@@ -530,7 +542,7 @@
                           </object>
                         </child>
                         <child>
-                          <object class="GtkColumnViewColumn" id="colum_tenth_item">
+                          <object class="GtkColumnViewColumn" id="column_page_count">
                             <property name="expand">True</property>
                             <property name="factory">
                               <object class="GtkBuilderListItemFactory" id="tenth_column_factory_id">
@@ -539,6 +551,7 @@
                       <template class="GtkListItem">
                         <property name="child">
                           <object class="GtkLabel">
+                           <property name="xalign">0</property>
                             <binding name="label">
                               <lookup name="page_count" type="BookData">
                                 <lookup name="item">GtkListItem</lookup>

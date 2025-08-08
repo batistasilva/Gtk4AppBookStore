@@ -94,7 +94,7 @@ static
 
 // a funktion that creates a GListModel with capital_item  objects
 GListModel *
-create_book_model(void);
+create_book_model(GListStore *store);
 
 
 // Response handler to handle OK/Cancel actions
@@ -102,13 +102,6 @@ static void
 on_response_remove(GtkAlertDialog *dialog,
                    gint response,
                    gpointer user_data);
-
-// static void
-// show_alert_dialog(GtkWindow *parent_window,
-//                   const char *message,
-//                   GCallback on_sl_response,
-//                   gpointer ok_data,
-//                   ItemToRemove * mitem);
 
 void setBookDataToEntry(BookData * m_book_data, gpointer mbbook_data);
 
@@ -139,10 +132,17 @@ void m_AddItemToDatabase(BookData * bookdata,
 void m_UdateItemToDatabase(BookData * bookdata,
                            BuilderBook *build_book);
 
-bool m_ValidEmptyFields(BookData * bookdata);
+bool m_ValidEmptyFields(BookData * bookdata, BuilderBook *m_build_book);
 
 void m_RemoveItemToDatabase(BuilderBook * build_book);
 
 void runCleanToAllEntryFields(BuilderBook *build_book);
+
+static gboolean
+callPopulateColumnViewTable(GBinding *binding,
+                           const GValue *from_value,
+                           GValue *to_value,
+                           gpointer columview);
+
 
 #endif // BOOKSTORE_H

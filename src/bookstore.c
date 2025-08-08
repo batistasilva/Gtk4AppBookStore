@@ -258,7 +258,7 @@ static BookData *book_data_new(const char *book_id, const char *title,
  * @brief create_book_model
  * @return
  */
-GListModel *create_book_model(void) {
+GListModel *create_book_model(GListStore *store) {
   MYSQL *conn = runInitMySQL();
 
   conn = loadCnf(conn);
@@ -271,11 +271,7 @@ GListModel *create_book_model(void) {
 
   MYSQL_ROW row;
 
-  GListStore *store = g_list_store_new(G_TYPE_OBJECT);
-
-  // title, author      , genre  , publication_date, isbn       , price, rating
-  // , publisher, language, page_count Mr   , Adda Spragge, Romance,  2025-07-24
-  // , 066718085-0, Peso ,  2.7   , Tagopia  , Chichewa ,  798
+//  store = g_list_store_new(G_TYPE_OBJECT);
 
   while ((row = getRowData(conn, result))) {
     g_list_store_append(store,
@@ -475,7 +471,8 @@ void m_AddItemToDatabase(BookData *bookdata, BuilderBook *build_book) {
  * @brief m_RemoveItemToDatabase
  * @param build_book
  */
-void m_RemoveItemToDatabase(BuilderBook *build_book) {
+void m_RemoveItemToDatabase(BuilderBook *build_book)
+{
   Content content_rs;
   Content content;
 
@@ -499,14 +496,14 @@ void m_RemoveItemToDatabase(BuilderBook *build_book) {
   } else {
     gtk_alert_show_error(content_rs.m_oper.sql_res_msg, build_book->window);
   }
-  g_print("\nItem to Removing %s ", book_id);
 }
 
 /**
  * @brief runCleanToAllEntryFields
  * @param build_book
  */
-void runCleanToAllEntryFields(BuilderBook *build_book) {
+void runCleanToAllEntryFields(BuilderBook *build_book)
+{
   gtk_editable_set_text(GTK_EDITABLE(build_book->m_book_id_obj), "");
   gtk_editable_set_text(GTK_EDITABLE(build_book->m_title_obj), "");
   gtk_editable_set_text(GTK_EDITABLE(build_book->m_author_obj), "");
@@ -519,7 +516,6 @@ void runCleanToAllEntryFields(BuilderBook *build_book) {
   gtk_editable_set_text(GTK_EDITABLE(build_book->m_language_obj), "");
   gtk_editable_set_text(GTK_EDITABLE(build_book->m_page_count_obj), "");
   //
-  // g_free(build_book);
 }
 
 /**
@@ -540,8 +536,6 @@ static void run_additem_callback(GtkButton *button, gpointer mbbook_data) {
 
   g_print("\nRun AddItem CallBack...!!!");
 
-  g_print("\nValue of ColumnView: %p : ", m_build_data->columnview);
-
   GtkSelectionModel *selection_model =
       GTK_SELECTION_MODEL(gtk_column_view_get_model(m_build_data->columnview));
   // if (column_view != NULL) g_object_unref(column_view); // Can not unfef
@@ -556,44 +550,29 @@ static void run_additem_callback(GtkButton *button, gpointer mbbook_data) {
 
     GtkSingleSelection *single_selection =
         GTK_SINGLE_SELECTION(selection_model);
-    // if (selection_model != NULL)  g_object_unref(selection_model); //
-    // Selection Model can not unref
-    g_print("\nValue is Single Selectionw: %p : ", single_selection);
 
     // Get the underlying GListModel
     GListModel *list_model = gtk_single_selection_get_model(single_selection);
-    // if (single_selection != NULL) g_object_unref(single_selection); // Single
-    // Selection can not unref
-    g_print("\nValue of store: %p ", list_model);
 
     // Cast to GListStore
     GListStore *store = G_LIST_STORE(list_model);
-    // if (list_model != NULL)g_object_unref(list_model); // List model can not
-    // unref, error will happens
-    g_print("\nValue of store: %p ", store);
 
     BookData *m_bookdata = getEntryToBookData(m_build_data);
 
-    if (m_ValidEmptyFields(m_bookdata)) {
+    if (m_ValidEmptyFields(m_bookdata, m_build_data)) {
 
       // Add new item from fields to database
       m_AddItemToDatabase(m_bookdata, m_build_data);
 
       g_list_store_append(store, m_bookdata);
-      // if (store != NULL) g_object_unref(store); // store can not unref,
-      // error will happens
     }
-
-    // if (m_build_data != NULL) g_object_unref(m_build_data); // Store can not
-    // unref, error will happens
 
     if (m_bookdata != NULL)
       g_object_unref(m_bookdata); // Store owns a reference now
   } else {
-    g_print("\nIs not GtkSingleSelection");
+    gtk_alert_show_warning("There Is no single selection!", m_build_data->window);
   }
 
-  g_print("\nRun Add Item new...!!!");
 }
 
 /**
@@ -601,9 +580,10 @@ static void run_additem_callback(GtkButton *button, gpointer mbbook_data) {
  * @param button
  * @param column_view
  */
-static void run_remove_item_callback(GtkButton *button, gpointer mbbook_data) {
+static void run_remove_item_callback(GtkButton *button,
+                                     gpointer mbbook_data)
+{
   GtkWidget *window;
-  window = gtk_window_new();
   BuilderBook *m_build_data = mbbook_data;
 
   g_print("\nRun Remove Item...!!!");
@@ -613,25 +593,13 @@ static void run_remove_item_callback(GtkButton *button, gpointer mbbook_data) {
 
   if (GTK_IS_SINGLE_SELECTION(selection_model)) {
 
-    GtkSingleSelection *single_selection =
-        GTK_SINGLE_SELECTION(selection_model);
-
-    // if (selection_model != NULL)  g_object_unref(selection_model); //
-    // Selection Model can not unref
-    g_print("\nValue is Single Selectionw: %p : ", single_selection);
+    GtkSingleSelection *single_selection = GTK_SINGLE_SELECTION(selection_model);
 
     // Get the underlying GListModel
     GListModel *list_model = gtk_single_selection_get_model(single_selection);
 
-    // if (single_selection != NULL) g_object_unref(single_selection); //
-    // Single Selection can not unref
-    g_print("\nValue of store: %p ", list_model);
-
     // Cast to GListStore
     GListStore *store = G_LIST_STORE(list_model);
-    // if (list_model != NULL)g_object_unref(list_model); // List model can
-    // not unref, error will happens
-    g_print("\nValue of store: %p ", store);
 
     guint selected_index = gtk_single_selection_get_selected(selection_model);
 
@@ -642,11 +610,11 @@ static void run_remove_item_callback(GtkButton *button, gpointer mbbook_data) {
         const char *message = "Do you want to remove this item?\n\t";
         gchar *msg = g_strconcat(message, "Name: ", book->author, NULL);
 
-        g_print("Message: : %s \n", msg);
-
         // Create an alert dialog with a simple message and a callback
         int response = gtk_alert_ask(msg, GTK_WINDOW(m_build_data->window),
                                      "Yes", "Cancel");
+        //Clean msg
+        g_free(msg);
 
         if (response == GTK_RESPONSE_ACCEPT) {
           // Remove item to Database
@@ -655,9 +623,6 @@ static void run_remove_item_callback(GtkButton *button, gpointer mbbook_data) {
           // Remove item to ColumnView
           g_list_store_remove(store, selected_index);
 
-          g_print("User chose YES\n");
-        } else {
-          g_print("User chose CANCEL\n");
         }
 
         g_print("Selected Row Data:\n");
@@ -673,18 +638,11 @@ static void run_remove_item_callback(GtkButton *button, gpointer mbbook_data) {
         g_print("  Language: %s\n", book->language);
         g_print("  Page_count: %s\n", book->page_count);
 
-        // No need to unref selected_person, as get_item returns a "floating"
-        // reference or a borrowed reference depending on context, and we're not
-        // taking ownership.
-      } else {
-        g_print("No valid item found at the selected index.\n");
       }
     } else {
-      g_print("No row selected.\n");
+      gtk_alert_show_warning("No row selected!", m_build_data->window);
     }
   }
-
-  g_print("\nEnd Remove Item...!!!");
 }
 
 /**
@@ -693,7 +651,9 @@ static void run_remove_item_callback(GtkButton *button, gpointer mbbook_data) {
  * @param build_book
  * @param parent
  */
-void m_UdateItemToDatabase(BookData *bookdata, BuilderBook *build_book) {
+void m_UdateItemToDatabase(BookData *bookdata,
+                           BuilderBook *build_book)
+{
   Content content_rs;
   Content *content = (Content *)malloc(sizeof(Content) * 11);
   //
@@ -755,36 +715,28 @@ void m_UdateItemToDatabase(BookData *bookdata, BuilderBook *build_book) {
 }
 
 
-static void run_update_item_callback(GtkButton *button, gpointer mbbook_data) {
+static void run_update_item_callback(GtkButton *button,
+                                     gpointer mbbook_data)
+{
   BuilderBook *m_build_data = mbbook_data;
 
   g_print("\nRun Update Item CallBack...!!!");
 
   GtkSelectionModel *selection_model =
       GTK_SELECTION_MODEL(gtk_column_view_get_model(m_build_data->columnview));
-  // if (column_view != NULL) g_object_unref(column_view); // Can not unfef
-  // ColumnView, erros will happens
+  /**
+   * If item was selected, enter to work
+   */
+  if (GTK_IS_SINGLE_SELECTION(selection_model))
+  {
 
-  /***
-   * Get the Selected Item (for GtkSingleSelection): If using
-   *GtkSingleSelection, retrieve the single selected item using
-   *gtk_single_selection_get_selected_item().
-   **/
-  if (GTK_IS_SINGLE_SELECTION(selection_model)) {
-
-    GtkSingleSelection *single_selection =
-        GTK_SINGLE_SELECTION(selection_model);
-    // if (selection_model != NULL)  g_object_unref(selection_model); //
-    // Selection Model can not unref
-    g_print("\nValue is Single Selectionw: %p : ", single_selection);
+    GtkSingleSelection *single_selection = GTK_SINGLE_SELECTION(selection_model);
 
     // Get the underlying GListModel
     GListModel *list_model = gtk_single_selection_get_model(single_selection);
-    g_print("\nValue of store: %p ", list_model);
 
     // Cast to GListStore
     GListStore *store = G_LIST_STORE(list_model);
-    g_print("\nValue of store: %p ", store);
 
     //Get position of item selected
     guint pos = gtk_single_selection_get_selected(single_selection);
@@ -810,26 +762,18 @@ static void run_update_item_callback(GtkButton *button, gpointer mbbook_data) {
                                  "publisher", m_bookdata->publisher,
                                  "language", m_bookdata->language,
                                  "page_count", m_bookdata->page_count,NULL);
-// or any other property
 
         // g_object_set(book_data, "title", "New Book Title",
         //              NULL);   // or any other property
 
-        g_object_unref(book_data); // Don't forget to unref after get_item
-        if (m_bookdata != NULL) g_object_unref(m_bookdata); // Store owns a reference now
+        // Don't forget to unref after get_item
+        if (book_data  != NULL) g_object_unref(book_data);
+        if (m_bookdata != NULL) g_object_unref(m_bookdata);
       }
     }
 
-   // g_list_store_append(store, m_bookdata);
-    // if (store != NULL) g_object_unref(store); // store can not unref, error
-    // will happens
-
-    // if (m_build_data != NULL) g_object_unref(m_build_data); // Store can not
-    // unref, error will happens
-
-
   } else {
-    g_print("\nIs not GtkSingleSelection");
+    gtk_alert_show_warning("There is not single selection!", m_build_data->window);
   }
 
   g_print("\nEnd Update Item...!!!");
@@ -843,16 +787,16 @@ void book_mng_activate(GtkApplication *app, gpointer param) {
   GtkWidget *columnview;
   GtkListItemFactory *factory;
   GtkSingleSelection *selection;
-  // GtkColumnViewColumn *title_column;
-  // GtkColumnViewColumn *author_column;
-  // GtkColumnViewColumn *genre_column;
-  // GtkColumnViewColumn *rating_column;
-  // GtkColumnViewColumn *isbn_column;
-  // GtkColumnViewColumn *publication_date_column;
-  // GtkColumnViewColumn *price_column;
-  // GtkColumnViewColumn *publisher_column;
-  // GtkColumnViewColumn *language_column;
-  // GtkColumnViewColumn *page_count_column;
+  GtkColumnViewColumn *title_column;
+  GtkColumnViewColumn *author_column;
+  GtkColumnViewColumn *genre_column;
+  GtkColumnViewColumn *rating_column;
+  GtkColumnViewColumn *isbn_column;
+  GtkColumnViewColumn *publication_date_column;
+  GtkColumnViewColumn *price_column;
+  GtkColumnViewColumn *publisher_column;
+  GtkColumnViewColumn *language_column;
+  GtkColumnViewColumn *page_count_column;
   BuilderBook *bbook_data;
 
   GtkSorter *sorter;
@@ -882,11 +826,9 @@ void book_mng_activate(GtkApplication *app, gpointer param) {
 
   g_object_add_weak_pointer(G_OBJECT(window), (gpointer *)&window);
 
-  // Get columnview from builder
-  // GObject *column_view = gtk_builder_get_object(builder, "column_view");
-
   // Get the whole object that the application needs the builder.
   columnview = GTK_WIDGET(gtk_builder_get_object(builder, "column_view"));
+  //
   GObject *obj_book_id = gtk_builder_get_object(builder, "entry_book_id");
   GObject *obj_title = gtk_builder_get_object(builder, "entry_title");
   GObject *obj_author = gtk_builder_get_object(builder, "entry_author");
@@ -903,62 +845,184 @@ void book_mng_activate(GtkApplication *app, gpointer param) {
   GObject *obj_button_rm = gtk_builder_get_object(builder, "button_remove");
   GObject *obj_button_updt = gtk_builder_get_object(builder, "button_updt");
 
-  model = create_book_model();
 
-  selection = GTK_SINGLE_SELECTION(
-      gtk_builder_get_object(builder, "single_select_model_id"));
+  selection =
+  GTK_SINGLE_SELECTION(gtk_builder_get_object(builder, "single_select_model_id"));
 
-  gtk_single_selection_set_model(selection, G_LIST_MODEL(model));
 
-  // Creat a stance the bookdata
-  bbook_data = g_new(BuilderBook, 1);
-  //
-  bbook_data->window = window;
-  bbook_data->columnview = GTK_COLUMN_VIEW(columnview);
-  //
-  bbook_data->m_book_id_obj = obj_book_id;
-  bbook_data->m_title_obj = obj_title;
-  bbook_data->m_author_obj = obj_author;
-  bbook_data->m_genre_obj = obj_genre;
-  bbook_data->m_publication_date_obj = obj_public_date;
-  bbook_data->m_isbn_obj = obj_isbn;
-  bbook_data->m_price_obj = obj_price;
-  bbook_data->m_rating_obj = obj_rating;
-  bbook_data->m_publisher_obj = obj_publisher;
-  bbook_data->m_language_obj = obj_language;
-  bbook_data->m_page_count_obj = obj_page_count;
-  //
-  bbook_data->m_button_remove_obj = obj_button_rm;
-  bbook_data->m_button_update_obj = obj_button_updt;
+ /***
+  * Populate the columnview table with database data
+  */
+ g_object_bind_property_full(selection,
+                             "selected-item",
+                             columnview,
+                             "model",
+                             G_BINDING_SYNC_CREATE,
+                             callPopulateColumnViewTable,
+                             NULL,
+                             columnview,
+                             NULL);
 
-  GObject *button_add = gtk_builder_get_object(builder, "button_add");
+ // Creat a stance the bookdata
+ bbook_data = g_new(BuilderBook, 1);
+ //
+ bbook_data->window = window;
+ bbook_data->columnview = GTK_COLUMN_VIEW(columnview);
+ //
+ bbook_data->m_book_id_obj = obj_book_id;
+ bbook_data->m_title_obj = obj_title;
+ bbook_data->m_author_obj = obj_author;
+ bbook_data->m_genre_obj = obj_genre;
+ bbook_data->m_publication_date_obj = obj_public_date;
+ bbook_data->m_isbn_obj = obj_isbn;
+ bbook_data->m_price_obj = obj_price;
+ bbook_data->m_rating_obj = obj_rating;
+ bbook_data->m_publisher_obj = obj_publisher;
+ bbook_data->m_language_obj = obj_language;
+ bbook_data->m_page_count_obj = obj_page_count;
+ //
+ bbook_data->m_button_remove_obj = obj_button_rm;
+ bbook_data->m_button_update_obj = obj_button_updt;
+ //
+ //****************************************************************
+ //       START SORT COLUMNS
+ //****************************************************************
 
-  g_signal_connect(GTK_BUTTON(button_add), "clicked",
-                   G_CALLBACK(run_additem_callback), bbook_data);
+//For Column Title
+ title_column =
+     GTK_COLUMN_VIEW_COLUMN(gtk_builder_get_object(builder, "column_title"));
 
-  GObject *button_load = gtk_builder_get_object(builder, "button_load");
+ sorter = GTK_SORTER(gtk_string_sorter_new(
+     gtk_property_expression_new(BOOK_TYPE_DATA, NULL, "title")));
+ //
+ gtk_column_view_column_set_sorter(title_column, sorter);
+ g_object_unref(sorter);
 
-  g_signal_connect(GTK_BUTTON(button_load), "clicked",
-                   G_CALLBACK(Load_Selectade_Item_Action), bbook_data);
+//For Column Author
+ author_column =
+     GTK_COLUMN_VIEW_COLUMN(gtk_builder_get_object(builder, "column_author"));
 
-  GObject *button_remove = gtk_builder_get_object(builder, "button_remove");
+ sorter = GTK_SORTER(gtk_string_sorter_new(
+     gtk_property_expression_new(BOOK_TYPE_DATA, NULL, "author")));
+ //
+ gtk_column_view_column_set_sorter(author_column, sorter);
+ g_object_unref(sorter);
 
-  g_signal_connect(GTK_BUTTON(button_remove), "clicked",
-                   G_CALLBACK(run_remove_item_callback), bbook_data);
+//For Column Genre
+ genre_column =
+     GTK_COLUMN_VIEW_COLUMN(gtk_builder_get_object(builder, "column_genre"));
 
-  GObject *button_updt = gtk_builder_get_object(builder, "button_updt");
+ sorter = GTK_SORTER(gtk_string_sorter_new(
+     gtk_property_expression_new(BOOK_TYPE_DATA, NULL, "genre")));
+ //
+ gtk_column_view_column_set_sorter(genre_column, sorter);
+ g_object_unref(sorter);
 
-  g_signal_connect(GTK_BUTTON(button_updt), "clicked",
-                   G_CALLBACK(run_update_item_callback), bbook_data);
+//For Column Publication_date
+ publication_date_column =
+     GTK_COLUMN_VIEW_COLUMN(gtk_builder_get_object(builder, "column_publication_date"));
 
-  GObject *button_clean = gtk_builder_get_object(builder, "button_clean");
+ sorter = GTK_SORTER(gtk_string_sorter_new(
+     gtk_property_expression_new(BOOK_TYPE_DATA, NULL, "publication_date")));
+ //
+ gtk_column_view_column_set_sorter(publication_date_column, sorter);
+ g_object_unref(sorter);
 
-  g_signal_connect(GTK_BUTTON(button_clean), "clicked",
-                   G_CALLBACK(run_clean_entry_fields_callback), bbook_data);
+//For Column Isbn
+ isbn_column =
+     GTK_COLUMN_VIEW_COLUMN(gtk_builder_get_object(builder, "column_isbn"));
 
-  gtk_application_add_window(app, window);
+ sorter = GTK_SORTER(gtk_string_sorter_new(
+     gtk_property_expression_new(BOOK_TYPE_DATA, NULL, "isbn")));
+ //
+ gtk_column_view_column_set_sorter(isbn_column, sorter);
+ g_object_unref(sorter);
+
+//For Column Price
+ price_column =
+     GTK_COLUMN_VIEW_COLUMN(gtk_builder_get_object(builder, "column_price"));
+
+ sorter = GTK_SORTER(gtk_string_sorter_new(
+     gtk_property_expression_new(BOOK_TYPE_DATA, NULL, "price")));
+ //
+ gtk_column_view_column_set_sorter(price_column, sorter);
+ g_object_unref(sorter);
+
+
+//For Column Rating
+ rating_column =
+     GTK_COLUMN_VIEW_COLUMN(gtk_builder_get_object(builder, "column_rating"));
+
+ sorter = GTK_SORTER(gtk_string_sorter_new(
+     gtk_property_expression_new(BOOK_TYPE_DATA, NULL, "rating")));
+ //
+ gtk_column_view_column_set_sorter(rating_column, sorter);
+ g_object_unref(sorter);
+
+//For Column Publisher
+ publisher_column =
+     GTK_COLUMN_VIEW_COLUMN(gtk_builder_get_object(builder, "column_publisher"));
+
+ sorter = GTK_SORTER(gtk_string_sorter_new(
+     gtk_property_expression_new(BOOK_TYPE_DATA, NULL, "publisher")));
+ //
+ gtk_column_view_column_set_sorter(publisher_column, sorter);
+ g_object_unref(sorter);
+
+//For Column Language
+ language_column =
+     GTK_COLUMN_VIEW_COLUMN(gtk_builder_get_object(builder, "column_language"));
+
+ sorter = GTK_SORTER(gtk_string_sorter_new(
+     gtk_property_expression_new(BOOK_TYPE_DATA, NULL, "language")));
+ //
+ gtk_column_view_column_set_sorter(language_column, sorter);
+ g_object_unref(sorter);
+
+
+//For Column Page_count
+ page_count_column =
+     GTK_COLUMN_VIEW_COLUMN(gtk_builder_get_object(builder, "column_page_count"));
+
+ sorter = GTK_SORTER(gtk_string_sorter_new(
+     gtk_property_expression_new(BOOK_TYPE_DATA, NULL, "page_count")));
+ //
+ gtk_column_view_column_set_sorter(page_count_column, sorter);
+ g_object_unref(sorter);
+
+ //*****************************************************************
+ //               END SORT
+ //*****************************************************************
+
+ GObject *button_add = gtk_builder_get_object(builder, "button_add");
+
+ g_signal_connect(GTK_BUTTON(button_add), "clicked",
+                  G_CALLBACK(run_additem_callback), bbook_data);
+
+ GObject *button_load = gtk_builder_get_object(builder, "button_load");
+
+ g_signal_connect(GTK_BUTTON(button_load), "clicked",
+                  G_CALLBACK(Load_Selectade_Item_Action), bbook_data);
+
+ GObject *button_remove = gtk_builder_get_object(builder, "button_remove");
+
+ g_signal_connect(GTK_BUTTON(button_remove), "clicked",
+                  G_CALLBACK(run_remove_item_callback), bbook_data);
+
+ GObject *button_updt = gtk_builder_get_object(builder, "button_updt");
+
+ g_signal_connect(GTK_BUTTON(button_updt), "clicked",
+                  G_CALLBACK(run_update_item_callback), bbook_data);
+
+ GObject *button_clean = gtk_builder_get_object(builder, "button_clean");
+
+ g_signal_connect(GTK_BUTTON(button_clean), "clicked",
+                  G_CALLBACK(run_clean_entry_fields_callback), bbook_data);
+
+ // gtk_application_add_window(app, window);
   gtk_window_present(GTK_WINDOW(window));
-
+  //
+  g_object_unref(builder);
 } // End Activate
 
 /**
@@ -973,61 +1037,132 @@ static void run_clean_entry_fields_callback(GtkButton *button_clean,
   runCleanToAllEntryFields(m_build_data);
 }
 
+
+
+
+
+
 /**
  * @brief m_ValidEmptyFields
  * @param bookdata
  * @return true or false
  */
-bool m_ValidEmptyFields(BookData *bookdata) {
+bool m_ValidEmptyFields(BookData * bookdata,
+                        BuilderBook *m_build_book)
+{
   if (is_effectively_empty(bookdata->title)) {
-    printf("\nField (Title) must be filled..!");
+    gtk_alert_show_warning("Field (Title) must be filled..!", m_build_book->window);
     return false;
-  }
+}
 
   if (is_effectively_empty(bookdata->author)) {
-    printf("\nField (Author) must be filled..!");
+    gtk_alert_show_warning("Field (Author) must be filled..!", m_build_book->window);
     return false;
   }
 
   if (is_effectively_empty(bookdata->genre)) {
-    printf("\nField (Genre) must be filled..!");
+    gtk_alert_show_warning("Field (Genre) must be filled..!", m_build_book->window);
     return false;
   }
 
   if (is_effectively_empty(bookdata->publication_date)) {
-    printf("\nField (Publication date) must be filled..!");
+    gtk_alert_show_warning("Field (Publication date) must be filled..!", m_build_book->window);
     return false;
   }
 
   if (is_effectively_empty(bookdata->isbn)) {
-    printf("\nField (Isbn) must be filled..!");
+    gtk_alert_show_warning("Field (Isbn) must be filled..!", m_build_book->window);
     return false;
   }
 
   if (is_effectively_empty(bookdata->price)) {
-    printf("\nField (Price) must be filled..!");
+    gtk_alert_show_warning("Field (Price) must be filled..!", m_build_book->window);
     return false;
   }
 
   if (is_effectively_empty(bookdata->rating)) {
-    printf("\nField (Rating) must be filled..!");
+    gtk_alert_show_warning("Field (Rating) must be filled..!", m_build_book->window);
     return false;
   }
 
   if (is_effectively_empty(bookdata->publisher)) {
-    printf("\nField (Publisher) must be filled..!");
+    gtk_alert_show_warning("Field (Publisher) must be filled..!", m_build_book->window);
     return false;
   }
 
   if (is_effectively_empty(bookdata->language)) {
-    printf("\nField (Language) must be filled..!");
+    gtk_alert_show_warning("Field (Language) must be filled..!", m_build_book->window);
     return false;
   }
 
   if (is_effectively_empty(bookdata->page_count)) {
-    printf("\nField (Page count) must be filled..!");
+    gtk_alert_show_warning("Field (Page count) must be filled..!", m_build_book->window);
     return false;
   }
 
   return true;
 }
+
+static GtkFilter *current_filter;
+gboolean
+callPopulateColumnViewTable(GBinding *binding,
+                           const GValue *from_value,
+                           GValue *to_value,
+                           gpointer columview)
+{
+
+    GListStore *store;
+    GtkSortListModel *sort_model;
+    GtkFilterListModel *filter_model;
+    GtkFilter *filter;
+
+  MYSQL *conn = runInitMySQL();
+
+  conn = loadCnf(conn);
+
+  const char *m_url = "SELECT * FROM book_store";
+
+  MYSQL_RES *result = runQuery(conn, m_url);
+
+  // int num_fields = getNumFields(result);
+
+  MYSQL_ROW row;
+
+  /*
+     Create a new GListStore to hold
+     'BOOK_TYPE_DATA' objects.
+  */
+  store = g_list_store_new(BOOK_TYPE_DATA);
+
+  while ((row = getRowData(conn, result))) {
+    g_list_store_append(store,
+                        // id   ,title ,author,genre ,p-date,isbn, price
+                        // ,rating, publish, lang, page
+                        book_data_new(row[0], row[1], row[2], row[3], row[4],
+                                      row[5], row[6], row[7], row[8], row[9],
+                                      row[10]));
+  }
+
+  runCloseConn(conn);
+
+
+    sort_model = gtk_sort_list_model_new(
+        G_LIST_MODEL(store),
+        g_object_ref(gtk_column_view_get_sorter(GTK_COLUMN_VIEW(columview))));
+
+    filter = GTK_FILTER(gtk_string_filter_new(
+            gtk_property_expression_new(BOOK_TYPE_DATA,
+                                        NULL,
+                                        "title")));
+
+    g_set_object(&current_filter, filter);
+
+    filter_model = gtk_filter_list_model_new(
+        G_LIST_MODEL(sort_model),
+        filter);
+
+    g_value_take_object(to_value, gtk_single_selection_new(G_LIST_MODEL(filter_model)));
+
+    return TRUE;
+}
+

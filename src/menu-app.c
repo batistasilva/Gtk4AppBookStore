@@ -25,40 +25,6 @@ void book_mng_action(GSimpleAction *action, GtkApplication *app, gpointer param)
   book_mng_activate(app, win);
 }
 
-
-/**
- * @brief new_window_activated
- * @param action
- * @param parameter
- * @param application
- */
-void
-new_window_activated(GSimpleAction *action, GVariant *parameter, GApplication *application) {
-    GtkApplication *app = GTK_APPLICATION(application);
-    GtkWidget *new_win = gtk_application_window_new(app);
-    gtk_window_set_title(GTK_WINDOW(new_win), "New Top-Level Window (Modal)");
-    gtk_window_set_default_size(GTK_WINDOW(new_win), 300, 200);
-
-    // Set the new window to be transient for the main application window
-    // This tells the window manager that new_win belongs to the main window.
-    // We need to get the active window from the application to set it as the transient parent.
-    GtkWidget *main_window = (GtkWidget *)gtk_application_get_active_window(app); // Explicit cast added here
-    if (main_window) {
-        gtk_window_set_transient_for(GTK_WINDOW(new_win), GTK_WINDOW(main_window));
-    }
-
-    // Set the new window to be modal
-    // This prevents interaction with the parent window until new_win is closed.
-    gtk_window_set_modal(GTK_WINDOW(new_win), TRUE);
-
-    // Add a label to the new window for demonstration
-    GtkWidget *label = gtk_label_new("This is a new top-level modal window!");
-    gtk_window_set_child(GTK_WINDOW(new_win), label);
-
-    gtk_window_present(GTK_WINDOW(new_win));
-    g_print("New top-level modal window opened!\n");
-}
-
 /**
  * @brief app_startup
  * @param application
