@@ -783,6 +783,9 @@ void book_mng_activate(GtkApplication *app, gpointer param) {
 
   g_autoptr(GtkBuilder) builder = NULL;
 
+  // Load css file to style applications
+  load_css(); //
+
   GListModel *model;
   GtkWidget *columnview;
   GtkListItemFactory *factory;
@@ -844,11 +847,8 @@ void book_mng_activate(GtkApplication *app, gpointer param) {
   //
   GObject *obj_button_rm = gtk_builder_get_object(builder, "button_remove");
   GObject *obj_button_updt = gtk_builder_get_object(builder, "button_updt");
-
-
   selection =
   GTK_SINGLE_SELECTION(gtk_builder_get_object(builder, "single_select_model_id"));
-
 
  /***
   * Populate the columnview table with database data
@@ -1022,7 +1022,7 @@ void book_mng_activate(GtkApplication *app, gpointer param) {
  // gtk_application_add_window(app, window);
   gtk_window_present(GTK_WINDOW(window));
   //
-  g_object_unref(builder);
+ // g_object_unref(builder);
 } // End Activate
 
 /**
@@ -1165,4 +1165,19 @@ callPopulateColumnViewTable(GBinding *binding,
 
     return TRUE;
 }
+
+/**
+ * @brief load_css
+ */
+void load_css(void) {
+  GtkCssProvider *provider = gtk_css_provider_new();
+  gtk_css_provider_load_from_path(provider, "../gui/css/style.css");
+
+  gtk_style_context_add_provider_for_display(
+      gdk_display_get_default(), GTK_STYLE_PROVIDER(provider),
+      GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+
+  g_object_unref(provider);
+}
+
 

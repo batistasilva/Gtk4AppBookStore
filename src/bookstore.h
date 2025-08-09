@@ -143,6 +143,6 @@ callPopulateColumnViewTable(GBinding *binding,
                            const GValue *from_value,
                            GValue *to_value,
                            gpointer columview);
-
+void load_css(void);
 
 #endif // BOOKSTORE_H

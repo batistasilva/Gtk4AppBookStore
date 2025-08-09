@@ -30,3 +30,54 @@
 .cancel-button:hover {
     background-color: #D32F2F;
 }
+
+/*label {
+    background-color: #f0f0f0 !important;
+    font-size: 18px;
+    color: #ff0000;
+}*/
+
+
+/*#gtkbox_main {
+  border: 2px solid #000000;
+}*/
+
+.gtkbox_main_class {
+   padding: 10px;
+   background-color: #e2e2e2;
+   color: #333333;
+   font-size: 14px;
+}
+
+.gtkframe_main_class {
+    border: 2px solid #aca2b8;
+    padding: 20px 10px 20px 10px;
+}
+
+/*#gtkbox_main {
+  padding: 10px;
+  background-color: #cccccc;
+
+}*/
+
+.css_entry_book_id {
+    font-size: 14px;
+    color: #ff0000;
+    font-weight: bold;
+}
+
+.css_lbbook_id {
+    font-size: 14px;
+}
+
+/*/* This targets an entry with the CSS class 'custom-entry' */
+/*.custom-entry {
+    background-color: #f0f0f0;
+    border-width: 1px;
+    border-color: #0000ff;
+}*/
+
+/*box {
+    padding: 10px;
+    background-color: #cccccc;
+}*/

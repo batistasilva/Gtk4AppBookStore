@@ -1,6 +1,7 @@
 //#include <bookstore.h>
 #include <src/menu-app.h>
 
+
 int main(int argc, char **argv) {
     g_autoptr(GtkApplication) app = NULL;
     int status;
