@@ -538,8 +538,6 @@ static void run_additem_callback(GtkButton *button, gpointer mbbook_data) {
 
   GtkSelectionModel *selection_model =
       GTK_SELECTION_MODEL(gtk_column_view_get_model(m_build_data->columnview));
-  // if (column_view != NULL) g_object_unref(column_view); // Can not unfef
-  // ColumnView, erros will happens
 
   /***
    * Get the Selected Item (for GtkSingleSelection): If using

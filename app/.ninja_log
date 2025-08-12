@@ -1,0 +1,10 @@
+# ninja log v6
+2	56	1755002061576011873	CMakeFiles/Gtk4AppBookStore.dir/util-dbg/show-msg.c.o	a795b23810846968
+2	68	1755002061576011873	CMakeFiles/Gtk4AppBookStore.dir/dao/bookstore_dao.c.o	673ebe31e4e4af8d
+1	76	1755002061576011873	CMakeFiles/Gtk4AppBookStore.dir/util-db/util.c.o	9854a470a3af786a
+1	165	1755002061576011873	CMakeFiles/Gtk4AppBookStore.dir/util-db/mysql_utils.c.o	fb383e4657de5889
+1	250	1755002061576011873	CMakeFiles/Gtk4AppBookStore.dir/main.c.o	de613afa2521a7c2
+2	259	1755002061576011873	CMakeFiles/Gtk4AppBookStore.dir/src/menu-app.c.o	8c917003e49d3183
+2	266	1755002061576011873	CMakeFiles/Gtk4AppBookStore.dir/util-app/alert_handler.c.o	b9b2fb3d9d106e4d
+1	326	1755002061576011873	CMakeFiles/Gtk4AppBookStore.dir/src/bookstore.c.o	4d2ff22b148fc4a3
+326	411	1755002061900011882	Gtk4AppBookStore	ff487195625f759f
