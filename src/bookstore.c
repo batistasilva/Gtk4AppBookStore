@@ -319,7 +319,7 @@ void setBookDataToEntry(BookData *m_book_data, gpointer mbbook_data) {
                         m_book_data->language);
   gtk_editable_set_text(GTK_EDITABLE(builder_book->m_page_count_obj),
                         m_book_data->page_count);
-  //
+  //Enable button remove and update
   gtk_widget_set_sensitive(GTK_WIDGET(builder_book->m_button_remove_obj), TRUE);
   gtk_widget_set_sensitive(GTK_WIDGET(builder_book->m_button_update_obj), TRUE);
 }
@@ -516,6 +516,9 @@ void runCleanToAllEntryFields(BuilderBook *build_book)
   gtk_editable_set_text(GTK_EDITABLE(build_book->m_language_obj), "");
   gtk_editable_set_text(GTK_EDITABLE(build_book->m_page_count_obj), "");
   //
+  //Disable button remove and update
+  gtk_widget_set_sensitive(GTK_WIDGET(build_book->m_button_remove_obj), FALSE);
+  gtk_widget_set_sensitive(GTK_WIDGET(build_book->m_button_update_obj), FALSE);
 }
 
 /**
@@ -622,20 +625,6 @@ static void run_remove_item_callback(GtkButton *button,
           g_list_store_remove(store, selected_index);
 
         }
-
-        g_print("Selected Row Data:\n");
-        g_print("  BookID: %s\n", book->book_id);
-        g_print("  Title: %s\n", book->title);
-        g_print("  Author: %s\n", book->author);
-        g_print("  Genre: %s\n", book->genre);
-        g_print("  Bublication data: %s\n", book->publication_date);
-        g_print("  Isbn: %s\n", book->isbn);
-        g_print("  Prince: %s\n", book->price);
-        g_print("  Rating: %s\n", book->rating);
-        g_print("  Publisher: %s\n", book->publisher);
-        g_print("  Language: %s\n", book->language);
-        g_print("  Page_count: %s\n", book->page_count);
-
       }
     } else {
       gtk_alert_show_warning("No row selected!", m_build_data->window);
@@ -712,9 +701,14 @@ void m_UdateItemToDatabase(BookData *bookdata,
   free(content);
 }
 
-
-static void run_update_item_callback(GtkButton *button,
-                                     gpointer mbbook_data)
+/**
+ * @brief run_update_item_callback
+ * @param button
+ * @param mbbook_data
+ */
+static void
+run_update_item_callback(GtkButton *button,
+                         gpointer mbbook_data)
 {
   BuilderBook *m_build_data = mbbook_data;
 
@@ -746,20 +740,18 @@ static void run_update_item_callback(GtkButton *button,
       //Get item store for position
       BookData *book_data = g_list_model_get_item(G_LIST_MODEL(store), pos);
 
-      if (book_data) {
+      //Valid all required fields.
+      if (m_ValidEmptyFields(m_bookdata, m_build_data)) {
+
          // Update item from fields to database
         m_UdateItemToDatabase(m_bookdata, m_build_data);
 
-        g_object_set(book_data, "title",m_bookdata->title,
-                                "author",m_bookdata->author,
-                                "genre",m_bookdata->genre,
-                                 "publication_date", m_bookdata->publication_date,
-                                 "isbn",m_bookdata->isbn,
-                                 "price",m_bookdata->price,
-                                 "rating", m_bookdata->rating,
-                                 "publisher", m_bookdata->publisher,
-                                 "language", m_bookdata->language,
-                                 "page_count", m_bookdata->page_count,NULL);
+        /**
+         * @brief m_UpdateItemToModel
+         * It will update the selected data in
+         * the model with the data, obtained from the field input.
+         */
+        m_UpdateItemToModel(book_data, m_bookdata);
 
         // g_object_set(book_data, "title", "New Book Title",
         //              NULL);   // or any other property
@@ -1033,11 +1025,8 @@ static void run_clean_entry_fields_callback(GtkButton *button_clean,
   BuilderBook *m_build_data = mbbook_data;
 
   runCleanToAllEntryFields(m_build_data);
+
 }
-
-
-
-
 
 
 /**
@@ -1179,3 +1168,23 @@ void load_css(void) {
 }
 
 
+/**
+ * @brief m_UpdateItemToModel
+ * @param book_data_old
+ * @param book_data_new
+ */
+void
+m_UpdateItemToModel(BookData *book_data_old,
+                         BookData *book_data_new)
+{
+        g_object_set(book_data_old, "title",book_data_new->title,
+                                "author",book_data_new->author,
+                                "genre",book_data_new->genre,
+                                 "publication_date", book_data_new->publication_date,
+                                 "isbn",book_data_new->isbn,
+                                 "price",book_data_new->price,
+                                 "rating", book_data_new->rating,
+                                 "publisher", book_data_new->publisher,
+                                 "language", book_data_new->language,
+                                 "page_count", book_data_new->page_count,NULL);
+}

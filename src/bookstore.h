@@ -103,7 +103,8 @@ on_response_remove(GtkAlertDialog *dialog,
                    gint response,
                    gpointer user_data);
 
-void setBookDataToEntry(BookData * m_book_data, gpointer mbbook_data);
+void setBookDataToEntry(BookData * m_book_data,
+                        gpointer mbbook_data);
 
 
 BookData * getEntryToBookData(gpointer mbbook_data);
@@ -117,10 +118,12 @@ static void run_additem_callback(GtkButton *button,
                                  gpointer mbbook_data);
 
 static void
-run_remove_item_callback(GtkButton *button, gpointer mbbook_data);
+run_remove_item_callback(GtkButton *button,
+                         gpointer mbbook_data);
 
 static void
-run_clean_entry_fields_callback(GtkButton *button, gpointer mbbook_data);
+run_clean_entry_fields_callback(GtkButton *button,
+                                gpointer mbbook_data);
 
 
 void
@@ -132,7 +135,11 @@ void m_AddItemToDatabase(BookData * bookdata,
 void m_UdateItemToDatabase(BookData * bookdata,
                            BuilderBook *build_book);
 
-bool m_ValidEmptyFields(BookData * bookdata, BuilderBook *m_build_book);
+void m_UpdateItemToModel(BookData * book_data_old,
+                       BookData * book_data_new);
+
+bool m_ValidEmptyFields(BookData * bookdata,
+                        BuilderBook *m_build_book);
 
 void m_RemoveItemToDatabase(BuilderBook * build_book);
 
