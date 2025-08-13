@@ -101,7 +101,7 @@ void app_activate(GApplication *application) {
 
   gtk_window_set_title(GTK_WINDOW(win), "[ BookStoreApp ]");
 
-  gtk_window_set_default_size(GTK_WINDOW(win), 1024, 680);
+  gtk_window_set_default_size(GTK_WINDOW(win), 1024, 660);
 
   // Load image from file using GFile
   GFile *file = g_file_new_for_path("../gui/images/bookstore-mng.png");
@@ -119,7 +119,7 @@ void app_activate(GApplication *application) {
   gtk_widget_set_vexpand(picture, TRUE);
   gtk_widget_set_valign(picture, GTK_ALIGN_FILL);
   gtk_widget_set_halign(picture, GTK_ALIGN_FILL);
-  gtk_widget_set_size_request(picture, 1024, 700);
+  gtk_widget_set_size_request(picture, 1024, 655);
 
   // Place the picture inside an overlay, so you can add content above it
   GtkWidget *overlay = gtk_overlay_new();

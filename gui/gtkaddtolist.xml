@@ -7,23 +7,24 @@
   <object class="GtkWindow" id="main_window">
     <property name="child">
       <object class="GtkBox" id="gtkbox_main">
-        <property name="orientation">vertical</property>
-        <property name="width-request">950</property>
-        <property name="height-request">300</property>
         <property name="css-classes">gtkbox_main_class</property>
-           <child>
+        <property name="height-request">300</property>
+        <property name="orientation">vertical</property>
+        <property name="width-request">960</property>
+        <child>
           <object class="GtkFrame" id="main_first_frame">
+            <property name="css-classes">gtkframe_main_class</property>
+            <property name="name">label_frame_main</property>
             <property name="label">Book Entry Form</property>
             <property name="label-xalign">0.5</property>
             <property name="margin-start">5</property>
             <property name="margin-top">5</property>
             <property name="width-request">950</property>
-            <property name="css-classes">gtkframe_main_class</property>
             <child>
               <object class="GtkFixed" id="fixed_first_frame">
                 <child>
                   <object class="GtkLabel" id="book_id">
-                   <property name="css-classes">css_lbbook_id</property>
+                    <property name="css-classes">css_lbbook_id</property>
                     <property name="height-request">30</property>
                     <property name="label">Book ID:</property>
                     <property name="margin-start">5</property>
@@ -31,32 +32,32 @@
                 </child>
                 <child>
                   <object class="GtkEntry" id="entry_book_id">
+                    <property name="css-classes">css_entry_book_id</property>
                     <property name="editable">False</property>
                     <property name="enable-undo">False</property>
                     <property name="margin-start">5</property>
                     <property name="margin-top">29</property>
                     <property name="sensitive">False</property>
                     <property name="tooltip-text">Show the book id code.</property>
-                    <property name="width-request">80</property>
+                    <property name="width-request">85</property>
                     <property name="xalign">0.5</property>
-                    <property name="css-classes">css_entry_book_id</property>
                   </object>
                 </child>
                 <child>
                   <object class="GtkLabel" id="label_title">
-                   <property name="height-request">30</property>
+                    <property name="height-request">30</property>
                     <property name="label">Title:</property>
-                    <property name="margin-start">90</property>
+                    <property name="margin-start">100</property>
                     <property name="width-request">40</property>
                   </object>
                 </child>
                 <child>
                   <object class="GtkEntry" id="entry_title">
                     <property name="height-request">30</property>
-                    <property name="margin-start">90</property>
+                    <property name="margin-start">100</property>
                     <property name="margin-top">29</property>
                     <property name="tooltip-text">Fill in the title field.</property>
-                    <property name="width-request">80</property>
+                    <property name="width-request">100</property>
                     <property name="xalign">0.5</property>
                   </object>
                 </child>
@@ -64,17 +65,17 @@
                   <object class="GtkLabel" id="label_author">
                     <property name="height-request">30</property>
                     <property name="label">Author:</property>
-                    <property name="margin-start">175</property>
+                    <property name="margin-start">210</property>
                     <property name="width-request">58</property>
                   </object>
                 </child>
                 <child>
                   <object class="GtkEntry" id="entry_author">
                     <property name="height-request">30</property>
-                    <property name="margin-start">175</property>
+                    <property name="margin-start">210</property>
                     <property name="margin-top">29</property>
                     <property name="tooltip-text">Fill in the author field.</property>
-                    <property name="width-request">150</property>
+                    <property name="width-request">250</property>
                     <property name="xalign">0.5</property>
                   </object>
                 </child>
@@ -82,14 +83,14 @@
                   <object class="GtkLabel" id="label_genre">
                     <property name="height-request">30</property>
                     <property name="label">Genre:</property>
-                    <property name="margin-start">330</property>
+                    <property name="margin-start">470</property>
                     <property name="width-request">50</property>
                   </object>
                 </child>
                 <child>
                   <object class="GtkEntry" id="entry_genre">
                     <property name="height-request">30</property>
-                    <property name="margin-start">330</property>
+                    <property name="margin-start">470</property>
                     <property name="margin-top">29</property>
                     <property name="tooltip-text">Fill in the genre field.</property>
                     <property name="width-request">150</property>
@@ -100,17 +101,17 @@
                   <object class="GtkLabel" id="label_public_date">
                     <property name="height-request">30</property>
                     <property name="label">Publicat. Date:</property>
-                    <property name="margin-start">485</property>
+                    <property name="margin-start">630</property>
                     <property name="width-request">100</property>
                   </object>
                 </child>
                 <child>
                   <object class="GtkEntry" id="entry_public_date">
                     <property name="height-request">30</property>
-                    <property name="margin-start">485</property>
+                    <property name="margin-start">630</property>
                     <property name="margin-top">29</property>
                     <property name="tooltip-text">Fill in the publication date field.</property>
-                    <property name="width-request">110</property>
+                    <property name="width-request">150</property>
                     <property name="xalign">0.5</property>
                   </object>
                 </child>
@@ -119,7 +120,7 @@
                     <property name="height-request">30</property>
                     <property name="label">Isbn:</property>
                     <property name="margin-end">5</property>
-                    <property name="margin-start">600</property>
+                    <property name="margin-start">790</property>
                     <property name="width-request">40</property>
                   </object>
                 </child>
@@ -127,10 +128,10 @@
                   <object class="GtkEntry" id="entry_isbn">
                     <property name="height-request">30</property>
                     <property name="margin-end">5</property>
-                    <property name="margin-start">600</property>
+                    <property name="margin-start">790</property>
                     <property name="margin-top">29</property>
                     <property name="tooltip-text">Fill in the isbn field.</property>
-                    <property name="width-request">100</property>
+                    <property name="width-request">150</property>
                     <property name="xalign">0.5</property>
                   </object>
                 </child>
@@ -149,7 +150,7 @@
                     <property name="margin-start">5</property>
                     <property name="margin-top">110</property>
                     <property name="tooltip-text">Fill in the price field.</property>
-                    <property name="width-request">80</property>
+                    <property name="width-request">85</property>
                     <property name="xalign">0.5</property>
                   </object>
                 </child>
@@ -157,7 +158,7 @@
                   <object class="GtkLabel" id="label_rating">
                     <property name="height-request">30</property>
                     <property name="label">Rating:</property>
-                    <property name="margin-start">90</property>
+                    <property name="margin-start">100</property>
                     <property name="margin-top">81</property>
                     <property name="width-request">53</property>
                   </object>
@@ -165,10 +166,10 @@
                 <child>
                   <object class="GtkEntry" id="entry_rating">
                     <property name="height-request">30</property>
-                    <property name="margin-start">90</property>
+                    <property name="margin-start">100</property>
                     <property name="margin-top">110</property>
                     <property name="tooltip-text">Fill in the rating field.</property>
-                    <property name="width-request">80</property>
+                    <property name="width-request">100</property>
                     <property name="xalign">0.5</property>
                   </object>
                 </child>
@@ -176,7 +177,7 @@
                   <object class="GtkLabel" id="label_publisher">
                     <property name="height-request">30</property>
                     <property name="label">Publisher:</property>
-                    <property name="margin-start">175</property>
+                    <property name="margin-start">210</property>
                     <property name="margin-top">81</property>
                     <property name="width-request">72</property>
                   </object>
@@ -184,10 +185,10 @@
                 <child>
                   <object class="GtkEntry" id="entry_publisher">
                     <property name="height-request">30</property>
-                    <property name="margin-start">175</property>
+                    <property name="margin-start">210</property>
                     <property name="margin-top">110</property>
                     <property name="tooltip-text">Fill in the publisher field.</property>
-                    <property name="width-request">150</property>
+                    <property name="width-request">250</property>
                     <property name="xalign">0.5</property>
                   </object>
                 </child>
@@ -195,7 +196,7 @@
                   <object class="GtkLabel" id="label_language">
                     <property name="height-request">30</property>
                     <property name="label">Language:</property>
-                    <property name="margin-start">330</property>
+                    <property name="margin-start">470</property>
                     <property name="margin-top">81</property>
                     <property name="width-request">73</property>
                   </object>
@@ -203,7 +204,7 @@
                 <child>
                   <object class="GtkEntry" id="entry_language">
                     <property name="height-request">30</property>
-                    <property name="margin-start">330</property>
+                    <property name="margin-start">470</property>
                     <property name="margin-top">110</property>
                     <property name="tooltip-text">Fill in the language field.</property>
                     <property name="width-request">150</property>
@@ -215,7 +216,7 @@
                     <property name="height-request">30</property>
                     <property name="label">Page Count:</property>
                     <property name="margin-end">5</property>
-                    <property name="margin-start">485</property>
+                    <property name="margin-start">630</property>
                     <property name="margin-top">81</property>
                     <property name="width-request">85</property>
                   </object>
@@ -224,20 +225,20 @@
                   <object class="GtkEntry" id="entry_page_count">
                     <property name="height-request">30</property>
                     <property name="margin-end">5</property>
-                    <property name="margin-start">485</property>
+                    <property name="margin-start">630</property>
                     <property name="margin-top">110</property>
                     <property name="tooltip-text">Fill in the page count field.</property>
-                    <property name="width-request">110</property>
+                    <property name="width-request">150</property>
                     <property name="xalign">0.5</property>
                   </object>
                 </child>
                 <child>
                   <object class="GtkButton" id="button_clean">
                     <property name="label">Clean</property>
-                    <property name="margin-start">600</property>
+                    <property name="margin-start">790</property>
                     <property name="margin-top">110</property>
                     <property name="tooltip-text">Clean all entry fields...</property>
-                    <property name="width-request">100</property>
+                    <property name="width-request">150</property>
                   </object>
                 </child>
               </object>
@@ -246,40 +247,36 @@
         </child>
         <child>
           <object class="GtkBox" id="main_box">
-            <property name="css-classes">#main_box {
-  background-color: #4c566a;
-  color: white;
-  border-radius: 6px;
-}
-
-.my-style {
-  font-weight: bold;
-  font-size: 14px;
-}
-</property>
-            <property name="height-request">30</property>
-            <property name="margin-end">230</property>
-            <property name="margin-start">227</property>
-            <property name="margin-top">10</property>
-            <property name="spacing">3</property>
+            <property name="css-classes">main_box_buttons</property>
+            <property name="halign">center</property>
+            <property name="margin-bottom">20</property>
+            <property name="margin-top">20</property>
+            <property name="valign">center</property>
             <child>
               <object class="GtkButton" id="button_add">
+                <property name="css-classes">action-button-add</property>
                 <property name="label">Add </property>
               </object>
             </child>
             <child>
               <object class="GtkButton" id="button_load">
+                 <property name="margin-start">10</property>
+                <property name="css-classes">action-button-load</property>
                 <property name="label">Load</property>
               </object>
             </child>
             <child>
               <object class="GtkButton" id="button_remove">
+                 <property name="margin-start">10</property>
+                <property name="css-classes">action-button-del</property>
                 <property name="label">Remove</property>
                 <property name="sensitive">False</property>
               </object>
             </child>
             <child>
               <object class="GtkButton" id="button_updt">
+                 <property name="margin-start">10</property>
+                <property name="css-classes">action-button-updt</property>
                 <property name="label">Update</property>
                 <property name="sensitive">False</property>
               </object>
@@ -288,23 +285,20 @@
         </child>
         <child>
           <object class="GtkFrame" id="main_second_frame">
-            <property name="height-request">100</property>
-            <property name="hexpand">True</property>
-            <property name="hexpand-set">True</property>
+            <property name="css-classes">css_item_list</property>
             <property name="label">Item List:</property>
-            <property name="label-xalign">0.01</property>
-            <property name="margin-start">30</property>
-            <property name="margin-top">10</property>
-            <property name="vexpand">True</property>
-            <property name="vexpand-set">True</property>
-            <property name="width-request">900</property>
-            <property name="height-request">400</property>
+            <property name="halign">center</property>
+            <property name="height-request">340</property>
+            <property name="valign">center</property>
+            <property name="width-request">950</property>
             <child>
-              <object class="GtkFixed" id="fixed_main_second_frame">
+              <object class="GtkBox" id="box_main_second_frame">
+                <property name="name">box_main_second_frame</property>
                 <property name="margin-start">5</property>
+                <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkScrolledWindow" id="scrolled_win_second_frame">
-                    <property name="height-request">400</property>
+                    <property name="height-request">320</property>
                     <property name="width-request">900</property>
                     <child>
                       <object class="GtkColumnView" id="column_view">
@@ -331,7 +325,8 @@
                                 <interface>
                                   <template class="GtkListItem">
                                     <property name="child">
-                                      <object class="GtkLabel">
+                                      <object class="GtkLabel" id="title_item">
+                                      <property name="name">title_item</property>
                                       <property name="xalign">0</property>
                                         <binding name="label">
                                           <lookup name="title" type="BookData">
@@ -357,8 +352,9 @@
                     <interface>
                       <template class="GtkListItem">
                         <property name="child">
-                          <object class="GtkLabel">
-                           <property name="xalign">0</property>
+                          <object class="GtkLabel" id="author_item">
+                            <property name="name">author_item</property>
+                            <property name="xalign">0</property>
                             <binding name="label">
                               <lookup name="author" type="BookData">
                                 <lookup name="item">GtkListItem</lookup>
@@ -382,7 +378,8 @@
                     <interface>
                       <template class="GtkListItem">
                         <property name="child">
-                          <object class="GtkLabel">
+                          <object class="GtkLabel" id="genre_item">
+                            <property name="name">genre_item</property>
                            <property name="xalign">0</property>
                             <binding name="label">
                               <lookup name="genre" type="BookData">
@@ -407,7 +404,8 @@
                     <interface>
                       <template class="GtkListItem">
                         <property name="child">
-                          <object class="GtkLabel">
+                          <object class="GtkLabel" id="publication_date_item">
+                            <property name="name">publication_date_item</property>
                            <property name="xalign">0</property>
                             <binding name="label">
                               <lookup name="publication_date" type="BookData">
@@ -432,7 +430,8 @@
                     <interface>
                       <template class="GtkListItem">
                         <property name="child">
-                          <object class="GtkLabel">
+                          <object class="GtkLabel" id="isbn_item">
+                            <property name="name">isbn_item</property>
                            <property name="xalign">0</property>
                             <binding name="label">
                               <lookup name="isbn" type="BookData">
@@ -457,7 +456,8 @@
                     <interface>
                       <template class="GtkListItem">
                         <property name="child">
-                          <object class="GtkLabel">
+                          <object class="GtkLabel" id="price_item">
+                           <property name="name">price_item</property>
                            <property name="xalign">0</property>
                             <binding name="label">
                               <lookup name="price" type="BookData">
@@ -482,7 +482,8 @@
                     <interface>
                       <template class="GtkListItem">
                         <property name="child">
-                          <object class="GtkLabel">
+                          <object class="GtkLabel" id="rating_item">
+                           <property name="name">rating_item</property>
                            <property name="xalign">0</property>
                             <binding name="label">
                               <lookup name="rating" type="BookData">
@@ -507,7 +508,8 @@
                     <interface>
                       <template class="GtkListItem">
                         <property name="child">
-                          <object class="GtkLabel">
+                          <object class="GtkLabel" id="publisher_item">
+                           <property name="name">publisher_item</property>
                            <property name="xalign">0</property>
                             <binding name="label">
                               <lookup name="publisher" type="BookData">
@@ -532,7 +534,8 @@
                     <interface>
                       <template class="GtkListItem">
                         <property name="child">
-                          <object class="GtkLabel">
+                          <object class="GtkLabel" id="language_item">
+                           <property name="name">language_item</property>
                            <property name="xalign">0</property>
                             <binding name="label">
                               <lookup name="language" type="BookData">
@@ -557,7 +560,8 @@
                     <interface>
                       <template class="GtkListItem">
                         <property name="child">
-                          <object class="GtkLabel">
+                          <object class="GtkLabel" id="page_count_item">
+                           <property name="name">page_count_item</property>
                            <property name="xalign">0</property>
                             <binding name="label">
                               <lookup name="page_count" type="BookData">
@@ -583,12 +587,11 @@
         </child>
       </object>
     </property>
-    <property name="default-height">675</property>
-    <property name="default-width">975</property>
+<!--    <property name="default-height">600</property>-->
+    <property name="default-width">990</property>
     <property name="destroy-with-parent">True</property>
     <property name="focusable">True</property>
     <property name="handle-menubar-accel">False</property>
     <property name="title">Gtk4 Book Store </property>
-    <property name="width-request">710</property>
   </object>
 </interface>

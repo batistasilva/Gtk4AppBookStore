@@ -1,3 +1,0 @@
-/home/nvme-disk/home/batista/WorkSpace/QtProjects/Gtk4AppBookStore/app/CMakeFiles/Gtk4AppBookStore.dir
-/home/nvme-disk/home/batista/WorkSpace/QtProjects/Gtk4AppBookStore/app/CMakeFiles/edit_cache.dir
-/home/nvme-disk/home/batista/WorkSpace/QtProjects/Gtk4AppBookStore/app/CMakeFiles/rebuild_cache.dir

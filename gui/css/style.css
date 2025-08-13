@@ -38,46 +38,101 @@
 }*/
 
 
-/*#gtkbox_main {
-  border: 2px solid #000000;
-}*/
+/*************************/
+/*      Start Class      */
+/*************************/
 
-.gtkbox_main_class {
+/*.gtkbox_main_class {
    padding: 10px;
    background-color: #e2e2e2;
    color: #333333;
    font-size: 14px;
-}
+}*/
 
 .gtkframe_main_class {
     border: 2px solid #aca2b8;
-    padding: 20px 10px 20px 10px;
+    padding: 20px 0 20px 0;
 }
 
-/*#gtkbox_main {
-  padding: 10px;
-  background-color: #cccccc;
-
-}*/
-
-.css_entry_book_id {
-    font-size: 14px;
-    color: #ff0000;
+#label_frame_main {
+    background-color: #e2e2e2;
+    color: #77767b;
+    font-size: 16px;
     font-weight: bold;
 }
 
-.css_lbbook_id {
-    font-size: 14px;
+.css_entry_book_id {
+    font-size: 18px;
+    color: #c64600;
+    font-weight: bold;
 }
 
-/*/* This targets an entry with the CSS class 'custom-entry' */
-/*.custom-entry {
-    background-color: #f0f0f0;
-    border-width: 1px;
-    border-color: #0000ff;
+.main_box_buttons {
+   border: 2px solid #aca2b8;
+   padding: 10px 10px 10px 10px;
+}
+
+
+/*.css_item_list {
+    font-size: 16px;
+    color: #1b202a;
+    font-weight: bold;
+}*/
+.css_item_list {
+    font-weight: bold;
+    font-size: 16px;
+    color: #1b202a;
+}
+
+/*GtkFrame > label {
+    font-weight: bold;
+    font-size: 14px;
+    color: red;
 }*/
 
-/*box {
-    padding: 10px;
-    background-color: #cccccc;
-}*/
+/* Resetting font properties for a label inside the scrolled window */
+#title_item, #author_item, #genre_item, #publication_date_item,
+#isbn_item, #price_item, #rating_item, #publisher_item, #language_item,
+#page_count_item
+{
+    font-weight: normal; /* Resets to default */
+    font-size: 15px;     /* Sets a different size */
+    color: #1b202a;      /* Resets color to the default */
+}
+
+
+.action-button-add {
+    border-radius: 8px;
+    border-style: none;
+    padding: 10px 20px;
+    color: #388e3c;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.action-button-load {
+    border-radius: 8px;
+    border-style: none;
+    padding: 10px 20px;
+    color: #1c71d8;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.action-button-updt {
+    border-radius: 8px;
+    border-style: none;
+    padding: 10px 20px;
+    color: #f6d32d;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.action-button-del {
+    border-radius: 8px;
+    border-style: none;
+    padding: 10px 20px;
+    color: #e01b24;
+    font-size: 16px;
+    font-weight: bold;
+}
